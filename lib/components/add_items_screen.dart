@@ -33,23 +33,24 @@ class AddItemPage extends StatefulWidget {
   final String? buttonTextValue;
   final int indexValue;
   final String? reminderDate;
+  final bool isEnabled;
 
-  const AddItemPage({
-    Key? key,
-    this.productNameValue,
-    this.priceValue,
-    this.categoryValue,
-    this.quantityValue,
-    this.manufactureDateValue,
-    this.expiryDateValue,
-    this.reminderTimeValue,
-    this.reminderDateValue,
-    this.note,
-    this.needToBuy = "false",
-    this.buttonTextValue,
-    this.indexValue = 0,
-    this.reminderDate,
-  });
+  const AddItemPage(
+      {Key? key,
+      this.productNameValue,
+      this.priceValue,
+      this.categoryValue,
+      this.quantityValue,
+      this.manufactureDateValue,
+      this.expiryDateValue,
+      this.reminderTimeValue,
+      this.reminderDateValue,
+      this.note,
+      this.needToBuy = "false",
+      this.buttonTextValue,
+      this.indexValue = 0,
+      this.reminderDate,
+      this.isEnabled = true});
 
   @override
   State<AddItemPage> createState() => _AddItemPageState();
@@ -122,7 +123,7 @@ class _AddItemPageState extends State<AddItemPage> {
     int daysLeft = expiryDate.difference(now).inDays;
 
     if (daysLeft < 0) {
-      return 0.0;
+      return 1.0;
     } else if (daysLeft == 0) {
       return 1.0;
     }
@@ -195,12 +196,17 @@ class _AddItemPageState extends State<AddItemPage> {
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               controller: productName,
+                              enabled: widget.isEnabled,
                               validator: (value) {
                                 if (value?.isEmpty ?? true) {
                                   return 'Please enter a value';
                                 }
                                 if (RegExp(r'^[0-9]').hasMatch(value!)) {
                                   return 'Name cannot be starts with number';
+                                }
+                                if (!RegExp(r'^[a-zA-Z0-9]+$')
+                                    .hasMatch(value)) {
+                                  return 'Name should only contain alphabets and numbers';
                                 }
                                 return null;
                               },
@@ -238,6 +244,7 @@ class _AddItemPageState extends State<AddItemPage> {
                             child: TextFormField(
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
+                              enabled: widget.isEnabled,
                               validator: (value) {
                                 if (value != null && value.isNotEmpty) {
                                   if (!RegExp(r"^[0-9]+$").hasMatch(value)) {
@@ -368,6 +375,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                                         horizontal: 10),
                                                 child: TextFormField(
                                                   controller: category,
+                                                  enabled: widget.isEnabled,
                                                   autovalidateMode:
                                                       AutovalidateMode
                                                           .onUserInteraction,
@@ -488,7 +496,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                                       ),
                                                       onPressed: () {
                                                         Navigator.of(context)
-                                                            .pop();
+                                                            .pop(true);
                                                       },
                                                       child: Text(
                                                         "cancel",
@@ -531,6 +539,7 @@ class _AddItemPageState extends State<AddItemPage> {
                             child: TextFormField(
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
+                              enabled: widget.isEnabled,
                               validator: (value) {
                                 if (value != null && value.isNotEmpty) {
                                   if (!RegExp(r"^[0-9]+$").hasMatch(value)) {
@@ -565,6 +574,7 @@ class _AddItemPageState extends State<AddItemPage> {
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                               controller: manufacturingDateValue,
+                              enabled: widget.isEnabled,
                               validator: (value) {
                                 if (value == null) {
                                   return 'Please Select The Date';
@@ -627,6 +637,7 @@ class _AddItemPageState extends State<AddItemPage> {
                             child: TextFormField(
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
+                              enabled: widget.isEnabled,
                               validator: (value) {
                                 if (value == null)
                                   return 'Please Select The Date';
@@ -658,7 +669,8 @@ class _AddItemPageState extends State<AddItemPage> {
                                 DateTime? _pickedDate = await showDatePicker(
                                   context: context,
                                   initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
+                                  firstDate: DateTime.now()
+                                      .subtract(Duration(days: 0)),
                                   lastDate: DateTime(2100),
                                 );
                                 if (_pickedDate != null) {
@@ -712,6 +724,7 @@ class _AddItemPageState extends State<AddItemPage> {
                             child: TextFormField(
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
+                              enabled: widget.isEnabled,
                               validator: (value) {
                                 if (value?.isEmpty ?? true) {
                                   return "Please Select The Time";
@@ -806,13 +819,17 @@ class _AddItemPageState extends State<AddItemPage> {
                                   );
                                 }).toList(),
                                 onChanged: (newValue) async {
+                                  if (newValue.toString() == "Never") {
+                                    reminderDate.text = "";
+                                  }
                                   if (newValue.toString() ==
                                       "On Specific Date") {
                                     DateTime? _datePicked =
                                         await showDatePicker(
                                       context: context,
                                       initialDate: DateTime.now(),
-                                      firstDate: DateTime(2000),
+                                      firstDate: DateTime.now()
+                                          .subtract(Duration(days: 0)),
                                       lastDate: DateTime(2100),
                                     );
                                     if (_datePicked!
@@ -865,8 +882,12 @@ class _AddItemPageState extends State<AddItemPage> {
                               readOnly: true,
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
+                              enabled: widget.isEnabled,
                               controller: reminderDate,
                               validator: (value) {
+                                if (selectedReminderDropDownValue == "Never") {
+                                  return null;
+                                }
                                 if (value!.isEmpty) {
                                   return 'Please Select The Date';
                                 }
@@ -890,21 +911,6 @@ class _AddItemPageState extends State<AddItemPage> {
                                   borderSide: BorderSide(color: Colors.black),
                                 ),
                               ),
-                              // onTap: () async {
-                              //   DateTime? _picked = await showDatePicker(
-                              //     context: context,
-                              //     initialDate: DateTime.now(),
-                              //     firstDate: DateTime(2000),
-                              //     lastDate: DateTime(2100),
-                              //   );
-                              //
-                              //   if (_picked != null) {
-                              //     setState(() {
-                              //       reminderDate.text =
-                              //           _picked.toString().split(" ")[0];
-                              //     });
-                              //   }
-                              // },
                             ),
                           ),
                         ],
@@ -923,6 +929,7 @@ class _AddItemPageState extends State<AddItemPage> {
                           Expanded(
                             child: TextFormField(
                               controller: Note,
+                              enabled: widget.isEnabled,
                               decoration: InputDecoration(
                                 labelText: "Note",
                                 labelStyle: GoogleFonts.lato(
@@ -975,11 +982,13 @@ class _AddItemPageState extends State<AddItemPage> {
                                       Icon(Icons.close)),
                               activeColor: const Color.fromRGBO(0, 151, 136, 1),
                               value: bool.parse(isSwitchActive),
-                              onChanged: (newvalue) {
-                                setState(() {
-                                  isSwitchActive = newvalue.toString();
-                                });
-                              }),
+                              onChanged: !widget.isEnabled
+                                  ? null
+                                  : (newvalue) {
+                                      setState(() {
+                                        isSwitchActive = newvalue.toString();
+                                      });
+                                    }),
                         ],
                       ),
                       //-------------------Need To Buy Ends------------------
@@ -997,141 +1006,158 @@ class _AddItemPageState extends State<AddItemPage> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: buttonText == "Add"
-                                        ? const Text("Item Added")
-                                        : const Text("Item Updated"),
-                                  ),
-                                );
-                              }
-                              if (productName.text.isNotEmpty &&
-                                  (selectedCategoryValueOfDropDownList
-                                          .isNotEmpty &&
-                                      selectedCategoryValueOfDropDownList !=
-                                          'Choose Category') &&
-                                  expiryDateValue.text.isNotEmpty &&
-                                  (selectedReminderDropDownValue !=
-                                          'Choose Reminder Date' &&
-                                      selectedReminderDropDownValue
-                                          .isNotEmpty) &&
-                                  (reminderTimeValue.text.isNotEmpty)) {
-                                if (buttonText == "Add") {
-                                  // Provider.of<CategoryProvider>(context,
-                                  //         listen: false)
-                                  //     .updateIsInUse(
-                                  //         selectedCategoryValueOfDropDownList
-                                  //             .toString());
-                                  Provider.of<AddItemsProvider>(context,
-                                          listen: false)
-                                      .addItem(
-                                    ({
-                                      'productName': productName.text.trim(),
-                                      'productPrice': price.text.isEmpty
-                                          ? null
-                                          : price.text.trim(),
-                                      'category':
-                                          selectedCategoryValueOfDropDownList ==
-                                                  'Choose Category'
+                            onPressed: !widget.isEnabled
+                                ? null
+                                : () {
+                                    if (_formKey.currentState!.validate()) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: buttonText == "Add"
+                                              ? const Text("Item Added")
+                                              : const Text("Item Updated"),
+                                        ),
+                                      );
+                                    }
+                                    if (productName.text.isNotEmpty &&
+                                        (selectedCategoryValueOfDropDownList
+                                                .isNotEmpty &&
+                                            selectedCategoryValueOfDropDownList !=
+                                                'Choose Category') &&
+                                        expiryDateValue.text.isNotEmpty &&
+                                        (selectedReminderDropDownValue !=
+                                                'Choose Reminder Date' &&
+                                            selectedReminderDropDownValue
+                                                .isNotEmpty) &&
+                                        (reminderTimeValue.text.isNotEmpty)) {
+                                      if (buttonText == "Add") {
+                                        // Provider.of<CategoryProvider>(context,
+                                        //         listen: false)
+                                        //     .updateIsInUse(
+                                        //         selectedCategoryValueOfDropDownList
+                                        //             .toString());
+                                        Provider.of<AddItemsProvider>(context,
+                                                listen: false)
+                                            .addItem(
+                                          ({
+                                            'productName':
+                                                productName.text.trim(),
+                                            'productPrice': price.text.isEmpty
+                                                ? null
+                                                : price.text.trim(),
+                                            'category':
+                                                selectedCategoryValueOfDropDownList ==
+                                                        'Choose Category'
+                                                    ? null
+                                                    : selectedCategoryValueOfDropDownList
+                                                        .trim(),
+                                            'productQuantity':
+                                                quantity.text.isEmpty
+                                                    ? null
+                                                    : quantity.text.trim(),
+                                            'manufacturingDate':
+                                                manufacturingDateValue
+                                                        .text.isEmpty
+                                                    ? null
+                                                    : manufacturingDateValue
+                                                        .text
+                                                        .trim(),
+                                            'expiryDate':
+                                                expiryDateValue.text.trim(),
+                                            'reminderTime':
+                                                reminderTimeValue.text.trim(),
+                                            'choosedReminder':
+                                                selectedReminderDropDownValue ==
+                                                            "Choose Reminder Date" ||
+                                                        selectedReminderDropDownValue ==
+                                                            "Never"
+                                                    ? null
+                                                    : selectedReminderDropDownValue
+                                                        .trim(),
+                                            'note': Note.text.isEmpty
+                                                ? null
+                                                : Note.text.trim(),
+                                            'isNeeded': isSwitchActive
+                                                .toString()
+                                                .trim(),
+                                            'dayLeftInExpiry': DateTime.parse(
+                                                    expiryDateValue.text)
+                                                .difference(DateTime.now())
+                                                .inDays,
+                                            'dayLeftInExpiryPercent':
+                                                percentageDaysLeft(
+                                                    expiryDateValue.text),
+                                            "reminderDate":
+                                                reminderDate.text.isNotEmpty
+                                                    ? reminderDate.text.trim()
+                                                    : null,
+                                            "isDeleted": "false"
+                                          }),
+                                        );
+                                        Navigator.of(context).pop(true);
+                                      } else {
+                                        // Provider.of<CategoryProvider>(context,
+                                        //         listen: false)
+                                        //     .updateIsNotInUse(
+                                        //         widget.categoryValue.toString());
+                                        // Provider.of<CategoryProvider>(context,
+                                        //         listen: false)
+                                        //     .updateIsInUse(
+                                        //         selectedCategoryValueOfDropDownList
+                                        //             .toString());
+                                        Provider.of<AddItemsProvider>(context,
+                                                listen: false)
+                                            .updateItem(index, {
+                                          'productName': productName.text,
+                                          'productPrice': price.text.isEmpty
                                               ? null
-                                              : selectedCategoryValueOfDropDownList
-                                                  .trim(),
-                                      'productQuantity': quantity.text.isEmpty
-                                          ? null
-                                          : quantity.text.trim(),
-                                      'manufacturingDate':
-                                          manufacturingDateValue.text.isEmpty
+                                              : price.text,
+                                          'category':
+                                              selectedCategoryValueOfDropDownList ==
+                                                      'Choose Category'
+                                                  ? null
+                                                  : selectedCategoryValueOfDropDownList,
+                                          'productQuantity':
+                                              quantity.text.isEmpty
+                                                  ? null
+                                                  : quantity.text,
+                                          'manufacturingDate':
+                                              manufacturingDateValue
+                                                      .text.isEmpty
+                                                  ? null
+                                                  : manufacturingDateValue.text,
+                                          'expiryDate': expiryDateValue.text,
+                                          'reminderTime':
+                                              reminderTimeValue.text,
+                                          'choosedReminder':
+                                              selectedReminderDropDownValue ==
+                                                          "Choose Reminder Date" ||
+                                                      selectedReminderDropDownValue ==
+                                                          "Never"
+                                                  ? null
+                                                  : selectedReminderDropDownValue,
+                                          'note': Note.text.isEmpty
                                               ? null
-                                              : manufacturingDateValue.text
-                                                  .trim(),
-                                      'expiryDate': expiryDateValue.text.trim(),
-                                      'reminderTime':
-                                          reminderTimeValue.text.trim(),
-                                      'choosedReminder':
-                                          selectedReminderDropDownValue ==
-                                                      "Choose Reminder Date" ||
-                                                  selectedReminderDropDownValue ==
-                                                      "Never"
-                                              ? null
-                                              : selectedReminderDropDownValue
-                                                  .trim(),
-                                      'note': Note.text.isEmpty
-                                          ? null
-                                          : Note.text.trim(),
-                                      'isNeeded':
-                                          isSwitchActive.toString().trim(),
-                                      'dayLeftInExpiry':
-                                          DateTime.parse(expiryDateValue.text)
+                                              : Note.text,
+                                          'isNeeded':
+                                              isSwitchActive.toString().trim(),
+                                          'dayLeftInExpiry': DateTime.parse(
+                                                  expiryDateValue.text)
                                               .difference(DateTime.now())
                                               .inDays,
-                                      'dayLeftInExpiryPercent':
-                                          percentageDaysLeft(
-                                              expiryDateValue.text),
-                                      "reminderDate":
-                                          reminderDate.text.isNotEmpty
-                                              ? reminderDate.text.trim()
-                                              : null,
-                                    }),
-                                  );
-                                  Navigator.of(context).pop();
-                                } else {
-                                  // Provider.of<CategoryProvider>(context,
-                                  //         listen: false)
-                                  //     .updateIsNotInUse(
-                                  //         widget.categoryValue.toString());
-                                  // Provider.of<CategoryProvider>(context,
-                                  //         listen: false)
-                                  //     .updateIsInUse(
-                                  //         selectedCategoryValueOfDropDownList
-                                  //             .toString());
-                                  Provider.of<AddItemsProvider>(context,
-                                          listen: false)
-                                      .updateItem(index, {
-                                    'productName': productName.text,
-                                    'productPrice':
-                                        price.text.isEmpty ? null : price.text,
-                                    'category':
-                                        selectedCategoryValueOfDropDownList ==
-                                                'Choose Category'
-                                            ? null
-                                            : selectedCategoryValueOfDropDownList,
-                                    'productQuantity': quantity.text.isEmpty
-                                        ? null
-                                        : quantity.text,
-                                    'manufacturingDate':
-                                        manufacturingDateValue.text.isEmpty
-                                            ? null
-                                            : manufacturingDateValue.text,
-                                    'expiryDate': expiryDateValue.text,
-                                    'reminderTime': reminderTimeValue.text,
-                                    'choosedReminder':
-                                        selectedReminderDropDownValue ==
-                                                    "Choose Reminder Date" ||
-                                                selectedReminderDropDownValue ==
-                                                    "Never"
-                                            ? null
-                                            : selectedReminderDropDownValue,
-                                    'note':
-                                        Note.text.isEmpty ? null : Note.text,
-                                    'isNeeded':
-                                        isSwitchActive.toString().trim(),
-                                    'dayLeftInExpiry':
-                                        DateTime.parse(expiryDateValue.text)
-                                            .difference(DateTime.now())
-                                            .inDays,
-                                    'dayLeftInExpiryPercent':
-                                        percentageDaysLeft(
-                                            expiryDateValue.text),
-                                    "reminderDate": reminderDate.text.isNotEmpty
-                                        ? reminderDate.text
-                                        : null,
-                                  });
-                                  Navigator.of(context).pop();
-                                }
-                              }
-                            }),
+                                          'dayLeftInExpiryPercent':
+                                              percentageDaysLeft(
+                                                  expiryDateValue.text),
+                                          "reminderDate":
+                                              reminderDate.text.isNotEmpty
+                                                  ? reminderDate.text
+                                                  : null,
+                                          "isDeleted": "false"
+                                        });
+                                        Navigator.of(context).pop(true);
+                                      }
+                                    }
+                                  }),
                       )
                     ],
                   ),
@@ -1163,7 +1189,7 @@ class _AddItemPageState extends State<AddItemPage> {
             actions: [
               TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(true);
                   },
                   child: Text(
                     "Ok",
@@ -1175,131 +1201,3 @@ class _AddItemPageState extends State<AddItemPage> {
         });
   }
 }
-
-//---------------------------Custom Widget----------------------------
-
-// class categoryDialogBox extends StatefulWidget {
-//   const categoryDialogBox({super.key});
-//
-//   @override
-//   State<categoryDialogBox> createState() => _categoryDialogBoxState();
-// }
-//
-// class _categoryDialogBoxState extends State<categoryDialogBox> {
-//   TextEditingController category = TextEditingController();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Dialog(
-//       shape: RoundedRectangleBorder(),
-//       child: Container(
-//         height: 200,
-//         width: 350,
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             Container(
-//               height: 50,
-//               width: double.infinity,
-//               alignment: Alignment.centerLeft,
-//               padding: EdgeInsets.all(10),
-//               color: Color.fromRGBO(0, 151, 136, 1),
-//               child: Text(
-//                 "Add Category",
-//                 style: GoogleFonts.lato(
-//                     fontSize: 20,
-//                     color: Colors.white,
-//                     fontWeight: FontWeight.w600),
-//               ),
-//             ),
-//             Container(
-//               margin: EdgeInsets.symmetric(horizontal: 10),
-//               child: TextFormField(
-//                 controller: category,
-//                 autovalidateMode: AutovalidateMode.onUserInteraction,
-//                 validator: (value) {
-//                   if (RegExp(r"^[0-9]").hasMatch(value!)) {
-//                     return "Category Cannot Begin with digits";
-//                   }
-//                 },
-//                 cursorColor: Colors.red,
-//                 decoration: InputDecoration(
-//                   border: UnderlineInputBorder(
-//                     borderSide: BorderSide(
-//                       color: Colors.black,
-//                     ),
-//                   ),
-//                   enabledBorder: UnderlineInputBorder(
-//                     borderSide: BorderSide(
-//                       color: Colors.black,
-//                       width: 1,
-//                     ),
-//                   ),
-//                   focusedBorder: UnderlineInputBorder(
-//                     borderSide: BorderSide(
-//                       color: Colors.red,
-//                       width: 2,
-//                     ),
-//                   ),
-//                   labelText: "Category\*",
-//                   labelStyle: GoogleFonts.lato(
-//                     fontSize: 18,
-//                     fontWeight: FontWeight.w600,
-//                   ),
-//                   floatingLabelStyle: TextStyle(color: Colors.black54),
-//                 ),
-//               ),
-//             ),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 ElevatedButton(
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Color.fromRGBO(0, 121, 106, 1),
-//                   ),
-//                   onPressed: () {
-//                     if (!Provider.of<CategoryProvider>(context, listen: false)
-//                             .dropDownMenuCategoryItemsList
-//                             .contains(category.text) &&
-//                         category.text.isNotEmpty) {
-//                       setState(() {
-//                         Provider.of<CategoryProvider>(context, listen: false)
-//                             .addCategory(category.text);
-//                       });
-//                     }
-//                     Navigator.pop(context);
-//                   },
-//                   child: Text(
-//                     "Add",
-//                     style: GoogleFonts.lato(
-//                         color: Colors.white,
-//                         fontSize: 18,
-//                         fontWeight: FontWeight.w600),
-//                   ),
-//                 ),
-//                 SizedBox(
-//                   width: 10,
-//                 ),
-//                 ElevatedButton(
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.red,
-//                   ),
-//                   onPressed: () {
-//                     Navigator.pop(context);
-//                   },
-//                   child: Text(
-//                     "cancel",
-//                     style: GoogleFonts.lato(
-//                         color: Colors.white,
-//                         fontSize: 18,
-//                         fontWeight: FontWeight.w600),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

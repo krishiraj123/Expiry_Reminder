@@ -1,20 +1,44 @@
+import 'package:expiry_reminder/database/reminder.dart';
 import 'package:flutter/material.dart';
 
 class AddItemsProvider extends ChangeNotifier {
-  late final List<Map<String, dynamic>> addItemsList = [];
+  late List<Map<String, dynamic>> addItemsList = [];
 
-  void addItem(Map<String, dynamic> item) {
-    addItemsList.add(item);
+  Future<void> updateList() async {
+    addItemsList = await MyDatabase().getDataFromProducts();
     notifyListeners();
   }
 
-  void removeItem(Map<String, dynamic> item) {
-    addItemsList.remove(item);
+  Future<void> addItem(Map<String, dynamic> item) async {
+    // addItemsList.add(item);
+    await MyDatabase().insertDataIntoProducts(item);
+    updateList();
     notifyListeners();
   }
 
-  void updateItem(int index, Map<String, dynamic> item) {
-    addItemsList[index] = item;
+  Future<void> removeItem(int index) async {
+    // addItemsList.remove(item);
+    await MyDatabase().deleteProduct(index);
+    updateList();
+    notifyListeners();
+  }
+
+  Future<void> deleteItem(int index) async {
+    await MyDatabase().tempRemoveProduct(index);
+    updateList();
+    notifyListeners();
+  }
+
+  Future<void> updateItem(int index, Map<String, dynamic> item) async {
+    // addItemsList[index] = item;
+    await MyDatabase().updateProduct(item, index);
+    updateList();
+    notifyListeners();
+  }
+
+  Future<void> restoreItem(int index) async {
+    await MyDatabase().restoreProduct(index);
+    updateList();
     notifyListeners();
   }
 }

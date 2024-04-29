@@ -5,51 +5,74 @@ import 'package:rate_my_app/rate_my_app.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RatingPage {
-  rateApp(BuildContext context) {
+  void rateApp(BuildContext context) {
     RateMyApp rateMyApp = RateMyApp(
       preferencesPrefix: 'expiryreminder',
-      minDays: 0,
-      minLaunches: 0,
-      remindDays: 0,
-      remindLaunches: 0,
-      googlePlayIdentifier: 'com.aswdc_ExpiryReminder&hl=en&gl=US',
-      appStoreIdentifier: ' ',
+      minDays: 10,
+      minLaunches: 50,
+      remindDays: 7,
+      remindLaunches: 25,
+      googlePlayIdentifier: 'com.aswdc_ExpiryReminder',
+      appStoreIdentifier: 'com.example.expiryReminder',
     );
 
     rateMyApp.showStarRateDialog(
       context,
       title: 'Rate this app',
-      message:
-          'Do You like this app ?\nThen take a little bit of your time to leave a rating:',
+      message: 'Do you like this app? Take a moment to leave a rating:',
       actionsBuilder: (context, stars) {
         return [
-          // Return a list of actions (that will be shown at the bottom of the dialog).
-          TextButton(
-            child: Text('OK'),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.green,
+              // Text color
+              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
             onPressed: () async {
               print('Thanks for the ' +
                   (stars == null ? '0' : stars.round().toString()) +
-                  ' star(s) !');
-              if (stars! < 3) {
+                  ' star(s)!');
+              if (stars != null && stars <= 3) {
+                rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed);
                 Navigator.of(context).pop();
               } else {
-                launchUrl(Uri.parse(
-                    "https://play.google.com/store/apps/details?id=com.aswdc_ExpiryReminder&pcampaignid=web_share"));
+                // StoreRedirect.redirect(
+                //     androidAppId: 'com.aswdc_ExpiryReminder',
+                //     iOSAppId: 'com.example.expiryReminder');
+                String playStoreLink =
+                    "https://play.google.com/store/apps/details?id=com.aswdc_ExpiryReminder";
+                launchUrl(Uri.parse(playStoreLink));
+                Navigator.of(context).pop();
               }
-              await rateMyApp.callEvent(RateMyAppEventType.rateButtonPressed);
-              Navigator.pop<RateMyAppDialogButton>(
-                  context, RateMyAppDialogButton.rate);
             },
+            child: Text(
+              'Rate Now',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed);
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Maybe Later',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
           ),
         ];
       },
       ignoreNativeDialog: Platform.isAndroid,
-      dialogStyle: const DialogStyle(
+      dialogStyle: DialogStyle(
         titleAlign: TextAlign.center,
         messageAlign: TextAlign.center,
         messagePadding: EdgeInsets.only(bottom: 20),
       ),
-      starRatingOptions: const StarRatingOptions(),
+      starRatingOptions: StarRatingOptions(),
       onDismissed: () =>
           rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
     );

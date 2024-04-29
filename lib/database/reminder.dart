@@ -18,9 +18,9 @@ class MyDatabase {
 
     if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
       ByteData data =
-          await rootBundle.load(join('assets/database', 'reminder.db'));
+      await rootBundle.load(join('assets/database', 'reminder.db'));
       List<int> bytes =
-          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       await File(path).writeAsBytes(bytes);
       return true;
     }
@@ -30,7 +30,7 @@ class MyDatabase {
   Future<List<Map<String, dynamic>>> getDataFromCategory() async {
     Database db = await initDatabase();
     List<Map<String, dynamic>> data =
-        await db.rawQuery("select * from Category_Detail");
+    await db.rawQuery("select * from Category_Detail");
     return data;
   }
 
@@ -53,5 +53,70 @@ class MyDatabase {
     await db.update("Category_Detail", categoryData,
         where: "C_ID = ?", whereArgs: [index]);
     return;
+  }
+
+  Future<List<Map<String, dynamic>>> getDataFromProducts() async {
+    Database db = await initDatabase();
+    List<Map<String, dynamic>> data =
+    await db.rawQuery("select * from Product_Detail");
+    return data;
+  }
+
+  Future<void> insertDataIntoProducts(Map<String, dynamic> data) async {
+    Database db = await initDatabase();
+    await db.insert("Product_Detail", data);
+    return;
+  }
+
+  Future<void> deleteProduct(int index) async {
+    Database db = await initDatabase();
+    await db.delete("Product_Detail", where: "PID = ?", whereArgs: [index]);
+    return;
+  }
+
+  Future<void> updateProduct(Map<String, dynamic> data, int index) async {
+    Database db = await initDatabase();
+    await db
+        .update("Product_Detail", data, where: "PID = ?", whereArgs: [index]);
+    return;
+  }
+
+  Future<void> tempRemoveProduct(int index) async {
+    Database db = await initDatabase();
+    await db.rawUpdate(
+      "UPDATE Product_Detail SET isDeleted = ? WHERE PID = ?",
+      ["true", index],
+    );
+  }
+
+  Future<void> restoreProduct(int index) async {
+    Database db = await initDatabase();
+    await db.rawUpdate(
+      "UPDATE Product_Detail SET isDeleted = ? WHERE PID = ?",
+      ["false", index],
+    );
+  }
+
+  Future<void> updateDayLeftForAllProducts() async {
+    Database db = await initDatabase();
+    List<Map<String, dynamic>> products = await getDataFromProducts();
+
+    for (Map<String, dynamic> product in products) {
+      DateTime expiryDate = DateTime.parse(product['expiryDate']);
+      DateTime now = DateTime.now();
+      int dayLeft = expiryDate
+          .difference(now)
+          .inDays;
+      int totalDays = dayLeft + 2;
+      if (dayLeft < 0) {
+        product["dayLeftInExpiryPercent"] = 1.0;
+      } else if (dayLeft == 0) {
+        product["dayLeftInExpiryPercent"] = 1.0;
+      } else {
+        product["dayLeftInExpiryPercent"] = 1 - (dayLeft / totalDays);
+      }
+      product['dayLeftInExpiry'] = dayLeft;
+      await updateProduct(product, product['PID']);
+    }
   }
 }

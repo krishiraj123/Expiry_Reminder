@@ -38,9 +38,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 await showDialog(
                     context: context,
                     builder: (context) => AddCategoryPage()).then((value) {
-                  if (value) {
-                    setState(() {});
-                  }
+                  setState(() {});
                 });
               },
               icon: Icon(
@@ -160,9 +158,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                                                   .data![index]
                                                               ["C_ID"],
                                                         )).then((value) {
-                                                  if (value) {
-                                                    setState(() {});
-                                                  }
+                                                  setState(() {});
                                                 });
                                               }
                                               // else {
@@ -198,6 +194,7 @@ class _CategoryPageState extends State<CategoryPage> {
                         ),
                       );
                     } else {
+                      print("from else of builder 2");
                       return const Center(child: CircularProgressIndicator());
                     }
                   });
