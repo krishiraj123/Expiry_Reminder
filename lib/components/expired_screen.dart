@@ -34,10 +34,12 @@ class _ExpiredPageState extends State<ExpiredPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> items = Provider.of<AddItemsProvider>(context)
-        .addItemsList
-        .where((element) => element["dayLeftInExpiry"] <= 0)
-        .toList();
+    late List<Map<String, dynamic>> tempList = [];
+    List<Map<String, dynamic>> items = tempList =
+        Provider.of<AddItemsProvider>(context)
+            .addItemsList
+            .where((element) => element["dayLeftInExpiry"] <= 0)
+            .toList();
     if (searchQuery.text.isNotEmpty) {
       items = items
           .where((element) =>
@@ -65,19 +67,27 @@ class _ExpiredPageState extends State<ExpiredPage> {
       ),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-        child: ListView.builder(
-          itemCount: items.length + 1,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return customSearch(context);
-            } else
-              index -= 1;
-            return CustomSwipeCard(
-              item: items[index],
-              index: index,
-            );
-          },
-        ),
+        child: tempList.isEmpty
+            ? Center(
+                child: Text("No Items",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey.shade600)),
+              )
+            : ListView.builder(
+                itemCount: items.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return customSearch(context);
+                  } else
+                    index -= 1;
+                  return CustomSwipeCard(
+                    item: items[index],
+                    index: index,
+                  );
+                },
+              ),
       ),
     );
   }

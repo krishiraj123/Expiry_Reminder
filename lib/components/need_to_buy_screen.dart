@@ -65,19 +65,26 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
       ),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-        child: ListView.builder(
-          itemCount: items.length + 1,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return customSearch(context);
-            } else
-              index -= 1;
-            return CustomSwipeCard(
-              item: items[index],
-              index: index,
-            );
-          },
-        ),
+        child: items.isEmpty
+            ? Center(
+                child: Text("No Items",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey.shade600)),
+              )
+            : ListView.builder(
+                itemCount: items.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return customSearch(context);
+                  } else
+                    return CustomSwipeCard(
+                      item: items[index - 1],
+                      index: index - 1,
+                    );
+                },
+              ),
       ),
     );
   }

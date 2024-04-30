@@ -3,6 +3,7 @@ import 'package:expiry_reminder/components/category_screen.dart';
 import 'package:expiry_reminder/components/custom_swipable_card.dart';
 import 'package:expiry_reminder/components/deleted_screen.dart';
 import 'package:expiry_reminder/components/developer_screen.dart';
+import 'package:expiry_reminder/components/expire_soon_screen.dart';
 import 'package:expiry_reminder/components/expired_screen.dart';
 import 'package:expiry_reminder/components/need_to_buy_screen.dart';
 import 'package:expiry_reminder/components/rating_screen.dart';
@@ -295,15 +296,12 @@ class _HomePageState extends State<HomePage> {
                         ],
                       );
                     } else {
-                      index -= 1;
+                      final item = filteredItems[index - 1];
+                      return CustomSwipeCard(
+                        index: index - 1,
+                        item: item,
+                      );
                     }
-                    // final item =
-                    //     Provider.of<AddItemsProvider>(context).addItemsList[index];
-                    final item = filteredItems[index];
-                    return CustomSwipeCard(
-                      index: index,
-                      item: item,
-                    );
                   },
                 ),
               );
@@ -437,6 +435,10 @@ class _HomePageState extends State<HomePage> {
                     String playStoreLink =
                         "https://play.google.com/store/apps/developer?id=Darshan+University";
                     launchUrl(Uri.parse(playStoreLink));
+                  }
+                  if (drawerItemsList[index][1] == "Expire Soon") {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ExpireSoonPage()));
                   }
                 },
                 selected: isSelectedList[index],

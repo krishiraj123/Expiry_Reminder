@@ -1,7 +1,10 @@
+import 'package:expiry_reminder/components/add_items_provider.dart';
 import 'package:expiry_reminder/components/add_new_category_screen.dart';
+import 'package:expiry_reminder/components/info_detail_screen.dart';
 import 'package:expiry_reminder/database/reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -11,17 +14,17 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  List<String> commands = ['Edit', 'Delete'];
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // Provider.of<CategoryProvider>(context, listen: false).fetchData();
-  }
+  List<String> commands = ['Info', 'Edit', 'Delete'];
+  Set<String> categories = {};
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> items =
+        Provider.of<AddItemsProvider>(context).addItemsList;
+    categories.clear();
+    for (var i in items) {
+      categories.add(i["category"]);
+    }
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
@@ -59,15 +62,9 @@ class _CategoryPageState extends State<CategoryPage> {
                         padding: const EdgeInsets.only(top: 10),
                         child: ListView.builder(
                           itemCount: snapshot1.data!.length - 1,
-                          // Provider.of<CategoryProvider>(context)
-                          //     .dropDownMenuCategoryItemsList
-                          //     .length -
-                          //     1,
                           itemBuilder: (context, index) {
                             index++;
                             final item = snapshot1.data![index]["C_Category"];
-                            // Provider.of<CategoryProvider>(context)
-                            //     .dropDownMenuCategoryItemsList[index];
                             return PopupMenuButton(
                                 color: Color.fromRGBO(0, 151, 136, 1),
                                 child: Container(
@@ -99,6 +96,15 @@ class _CategoryPageState extends State<CategoryPage> {
                                                   fontSize: 16),
                                             ),
                                             onTap: () async {
+                                              if (val.toLowerCase() == 'info') {
+                                                Navigator.of(context)
+                                                    .push(MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      InfoDetailPage(
+                                                    catergory: item,
+                                                  ),
+                                                ));
+                                              }
                                               if (val.toLowerCase() ==
                                                   'delete') {
                                                 // if (Provider.of<CategoryProvider>(
@@ -113,10 +119,39 @@ class _CategoryPageState extends State<CategoryPage> {
                                                 //           item,
                                                 //           snapshot1.data![index]
                                                 //               ["C_ID"]);
-                                                MyDatabase().deleteCategory(
-                                                    snapshot1.data![index]
-                                                        ["C_ID"]);
-                                                setState(() {});
+                                                if (categories.contains(item)) {
+                                                  showDialog(
+                                                    barrierDismissible: false,
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        AlertDialog(
+                                                      content: Text(
+                                                        "$item is already in use, so it can't be deleted.",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: Text("Ok"),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                } else {
+                                                  MyDatabase().deleteCategory(
+                                                      snapshot1.data![index]
+                                                          ["C_ID"]);
+                                                  setState(() {});
+                                                }
                                               }
                                               // else {
                                               //     showDialog(
@@ -149,17 +184,46 @@ class _CategoryPageState extends State<CategoryPage> {
                                                 //             listen: false)
                                                 //         .checkIsTrue(item) ==
                                                 //     false) {
-                                                await showDialog(
+                                                if (categories.contains(item)) {
+                                                  showDialog(
+                                                    barrierDismissible: false,
                                                     context: context,
                                                     builder: (context) =>
-                                                        AddCategoryPage(
-                                                          category: item,
-                                                          itemIndex: snapshot1
-                                                                  .data![index]
-                                                              ["C_ID"],
-                                                        )).then((value) {
-                                                  setState(() {});
-                                                });
+                                                        AlertDialog(
+                                                      content: Text(
+                                                        "$item is already in use, so it can't be updated.",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                      ),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: Text("Ok"),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                } else {
+                                                  await showDialog(
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          AddCategoryPage(
+                                                            category: item,
+                                                            itemIndex: snapshot1
+                                                                    .data![
+                                                                index]["C_ID"],
+                                                          )).then((value) {
+                                                    setState(() {});
+                                                  });
+                                                }
                                               }
                                               // else {
                                               //   showDialog(

@@ -120,7 +120,7 @@ class _AddItemPageState extends State<AddItemPage> {
       return 0.0;
     }
 
-    int daysLeft = expiryDate.difference(now).inDays;
+    int daysLeft = (expiryDate.difference(now).inHours / 24.0).ceil();
 
     if (daysLeft < 0) {
       return 1.0;
@@ -327,6 +327,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                   .dropDownMenuCategoryItemsList
                                   .map((value) {
                                 return DropdownMenuItem(
+                                  enabled: widget.isEnabled,
                                   value: value,
                                   child: Text(
                                     value,
@@ -437,44 +438,51 @@ class _AddItemPageState extends State<AddItemPage> {
                                                                 .fromRGBO(
                                                                 0, 121, 106, 1),
                                                       ),
-                                                      onPressed: () {
-                                                        if (!Provider.of<
-                                                                        CategoryProvider>(
-                                                                    context,
-                                                                    listen:
-                                                                        false)
-                                                                .dropDownMenuCategoryItemsList
-                                                                .contains(category
-                                                                    .text
-                                                                    .toLowerCase()
-                                                                    .trim()) &&
-                                                            category.text
-                                                                .trim()
-                                                                .isNotEmpty) {
-                                                          // Provider.of<CategoryProvider>(
-                                                          //         context,
-                                                          //         listen: false)
-                                                          //     .addCategory(
-                                                          //         category
-                                                          //             .text);
-                                                          MyDatabase()
-                                                              .insertDataIntoCategory(
-                                                                  category.text
-                                                                      .trim());
-                                                          category.text = "";
-                                                          // Provider.of<
-                                                          //     CategoryProvider>(
-                                                          //   context,
-                                                          //   listen: false,
-                                                          // ).notifyListeners();
-                                                        }
-                                                        Provider.of<CategoryProvider>(
-                                                                context,
-                                                                listen: false)
-                                                            .fetchData();
-                                                        Navigator.of(context)
-                                                            .pop(true);
-                                                      },
+                                                      onPressed:
+                                                          !widget.isEnabled
+                                                              ? null
+                                                              : () {
+                                                                  if (!Provider.of<CategoryProvider>(
+                                                                              context,
+                                                                              listen:
+                                                                                  false)
+                                                                          .dropDownMenuCategoryItemsList
+                                                                          .contains(category
+                                                                              .text
+                                                                              .toLowerCase()
+                                                                              .trim()) &&
+                                                                      category
+                                                                          .text
+                                                                          .trim()
+                                                                          .isNotEmpty) {
+                                                                    // Provider.of<CategoryProvider>(
+                                                                    //         context,
+                                                                    //         listen: false)
+                                                                    //     .addCategory(
+                                                                    //         category
+                                                                    //             .text);
+                                                                    MyDatabase().insertDataIntoCategory(
+                                                                        category
+                                                                            .text
+                                                                            .trim());
+                                                                    category.text =
+                                                                        "";
+                                                                    // Provider.of<
+                                                                    //     CategoryProvider>(
+                                                                    //   context,
+                                                                    //   listen: false,
+                                                                    // ).notifyListeners();
+                                                                  }
+                                                                  Provider.of<CategoryProvider>(
+                                                                          context,
+                                                                          listen:
+                                                                              false)
+                                                                      .fetchData();
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop(
+                                                                          true);
+                                                                },
                                                       child: Text(
                                                         "Add",
                                                         style: GoogleFonts.lato(
@@ -811,6 +819,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                     dropDownMenuReminderItemsList.map((value) {
                                   return DropdownMenuItem(
                                     value: value,
+                                    enabled: widget.isEnabled,
                                     child: Text(
                                       value,
                                       style: TextStyle(fontSize: 18),
@@ -1080,10 +1089,14 @@ class _AddItemPageState extends State<AddItemPage> {
                                             'isNeeded': isSwitchActive
                                                 .toString()
                                                 .trim(),
-                                            'dayLeftInExpiry': DateTime.parse(
-                                                    expiryDateValue.text)
-                                                .difference(DateTime.now())
-                                                .inDays,
+                                            'dayLeftInExpiry': (DateTime.parse(
+                                                            expiryDateValue
+                                                                .text)
+                                                        .difference(
+                                                            DateTime.now())
+                                                        .inHours /
+                                                    24.0)
+                                                .ceil(),
                                             'dayLeftInExpiryPercent':
                                                 percentageDaysLeft(
                                                     expiryDateValue.text),
@@ -1141,10 +1154,13 @@ class _AddItemPageState extends State<AddItemPage> {
                                               : Note.text,
                                           'isNeeded':
                                               isSwitchActive.toString().trim(),
-                                          'dayLeftInExpiry': DateTime.parse(
-                                                  expiryDateValue.text)
-                                              .difference(DateTime.now())
-                                              .inDays,
+                                          'dayLeftInExpiry': (DateTime.parse(
+                                                          expiryDateValue.text)
+                                                      .difference(
+                                                          DateTime.now())
+                                                      .inHours /
+                                                  24.0)
+                                              .ceil(),
                                           'dayLeftInExpiryPercent':
                                               percentageDaysLeft(
                                                   expiryDateValue.text),

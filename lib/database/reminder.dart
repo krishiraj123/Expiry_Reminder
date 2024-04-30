@@ -18,9 +18,9 @@ class MyDatabase {
 
     if (FileSystemEntity.typeSync(path) == FileSystemEntityType.notFound) {
       ByteData data =
-      await rootBundle.load(join('assets/database', 'reminder.db'));
+          await rootBundle.load(join('assets/database', 'reminder.db'));
       List<int> bytes =
-      data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
       await File(path).writeAsBytes(bytes);
       return true;
     }
@@ -30,7 +30,7 @@ class MyDatabase {
   Future<List<Map<String, dynamic>>> getDataFromCategory() async {
     Database db = await initDatabase();
     List<Map<String, dynamic>> data =
-    await db.rawQuery("select * from Category_Detail");
+        await db.rawQuery("select * from Category_Detail");
     return data;
   }
 
@@ -58,7 +58,7 @@ class MyDatabase {
   Future<List<Map<String, dynamic>>> getDataFromProducts() async {
     Database db = await initDatabase();
     List<Map<String, dynamic>> data =
-    await db.rawQuery("select * from Product_Detail");
+        await db.rawQuery("select * from Product_Detail");
     return data;
   }
 
@@ -104,9 +104,7 @@ class MyDatabase {
     for (Map<String, dynamic> product in products) {
       DateTime expiryDate = DateTime.parse(product['expiryDate']);
       DateTime now = DateTime.now();
-      int dayLeft = expiryDate
-          .difference(now)
-          .inDays;
+      int dayLeft = (expiryDate.difference(now).inHours / 24.0).ceil();
       int totalDays = dayLeft + 2;
       if (dayLeft < 0) {
         product["dayLeftInExpiryPercent"] = 1.0;

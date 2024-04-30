@@ -1,14 +1,14 @@
-import 'package:expiry_reminder/components/add_items_provider.dart';
-import 'package:expiry_reminder/components/custom_swipable_card.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+import '../components/add_items_provider.dart';
+import '../components/custom_swipable_card.dart';
 import '../database/reminder.dart';
 
 class DeletedPage extends StatefulWidget {
-  const DeletedPage({super.key});
+  const DeletedPage({Key? key}) : super(key: key);
 
   @override
   State<DeletedPage> createState() => _DeletedPageState();
@@ -17,7 +17,6 @@ class DeletedPage extends StatefulWidget {
 class _DeletedPageState extends State<DeletedPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Provider.of<AddItemsProvider>(context, listen: false)
         .updateList()
@@ -34,10 +33,12 @@ class _DeletedPageState extends State<DeletedPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> items = Provider.of<AddItemsProvider>(context)
-        .addItemsList
-        .where((element) => element["isDeleted"] == "true")
-        .toList();
+    late List<Map<String, dynamic>> tempList = [];
+    List<Map<String, dynamic>> items = tempList =
+        Provider.of<AddItemsProvider>(context)
+            .addItemsList
+            .where((element) => element["isDeleted"] == "true")
+            .toList();
     if (searchQuery.text.isNotEmpty) {
       items = items
           .where((element) =>
@@ -65,19 +66,27 @@ class _DeletedPageState extends State<DeletedPage> {
       ),
       body: Container(
         margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-        child: ListView.builder(
-          itemCount: items.length + 1,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return customSearch(context);
-            } else
-              index -= 1;
-            return CustomSwipeCard(
-              item: items[index],
-              index: index,
-            );
-          },
-        ),
+        child: tempList.isEmpty
+            ? Center(
+                child: Text("No Items",
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey.shade600)),
+              )
+            : ListView.builder(
+                itemCount: items.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return customSearch(context);
+                  } else {
+                    return CustomSwipeCard(
+                      item: items[index - 1],
+                      index: index - 1,
+                    );
+                  }
+                },
+              ),
       ),
     );
   }
