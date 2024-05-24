@@ -1,5 +1,6 @@
 import 'package:expiry_reminder/components/add_items_provider.dart';
 import 'package:expiry_reminder/components/add_new_category_screen.dart';
+import 'package:expiry_reminder/components/home_screen.dart';
 import 'package:expiry_reminder/components/info_detail_screen.dart';
 import 'package:expiry_reminder/database/reminder.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,17 @@ class _CategoryPageState extends State<CategoryPage> {
         title: Text(
           "Category",
           style: GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 23),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ));
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            size: 27,
+          ),
         ),
         actions: [
           IconButton(
@@ -191,7 +203,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                                     builder: (context) =>
                                                         AlertDialog(
                                                       content: Text(
-                                                        "$item is already in use, so it can't be updated.",
+                                                        "$item is already in use, so it can't be Edited.",
                                                         style:
                                                             GoogleFonts.poppins(
                                                                 fontSize: 16,

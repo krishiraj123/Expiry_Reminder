@@ -1,5 +1,6 @@
 import 'package:expiry_reminder/components/add_items_provider.dart';
 import 'package:expiry_reminder/components/custom_swipable_card.dart';
+import 'package:expiry_reminder/components/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -62,6 +63,17 @@ class _ExpiredPageState extends State<ExpiredPage> {
           color: Colors.white,
           fontSize: 22,
           fontWeight: FontWeight.w700,
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ));
+          },
+          icon: Icon(
+            Icons.arrow_back,
+            size: 27,
+          ),
         ),
         iconTheme: IconThemeData(color: Colors.white, size: 27),
       ),

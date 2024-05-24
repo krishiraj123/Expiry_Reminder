@@ -386,25 +386,26 @@ class _HomePageState extends State<HomePage> {
                     }
                   });
 
-                  // Your navigation logic here
+                  if (drawerItemsList[index][1] == 'All Items') {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => HomePage()));
+                  }
                   if (drawerItemsList[index][1] == 'Category') {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const CategoryPage()),
                     );
                   }
-                  if (drawerItemsList[index][1] == 'All Items') {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => HomePage()));
-                  }
                   if (drawerItemsList[index][1] == "Developer") {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => DeveloperPage()));
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => DeveloperPage()),
+                    );
                   }
                   if (drawerItemsList[index][1] == "Share app") {
                     await Share.share(
                         'https://play.google.com/store/apps/details?id=com.aswdc_ExpiryReminder&pcampaignid=web_share');
+                    Navigator.of(context).pop();
                   }
                   if (drawerItemsList[index][1] == "Feedback") {
                     // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>RatingPage()));
@@ -412,15 +413,17 @@ class _HomePageState extends State<HomePage> {
                     RatingPage().rateApp(context);
                   }
                   if (drawerItemsList[index][1] == "Deleted") {
-                    Navigator.of(context).push(
+                    Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) => DeletedPage()));
                   }
                   if (drawerItemsList[index][1] == "Expired") {
-                    Navigator.of(context).push(
+                    Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) => ExpiredPage()));
                   }
                   if (drawerItemsList[index][1] == "Need To Buy") {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    // Navigator.of(context).push(MaterialPageRoute(
+                    //     builder: (context) => NeedToBuyPage()));
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (context) => NeedToBuyPage()));
                   }
                   if (drawerItemsList[index][1] == "Check For Updates") {
@@ -437,7 +440,7 @@ class _HomePageState extends State<HomePage> {
                     launchUrl(Uri.parse(playStoreLink));
                   }
                   if (drawerItemsList[index][1] == "Expire Soon") {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
                         builder: (context) => ExpireSoonPage()));
                   }
                 },

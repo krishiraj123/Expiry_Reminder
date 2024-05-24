@@ -1,5 +1,6 @@
 import 'package:expiry_reminder/components/add_items_provider.dart';
 import 'package:expiry_reminder/components/custom_swipable_card.dart';
+import 'package:expiry_reminder/components/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,10 +35,12 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> items = Provider.of<AddItemsProvider>(context)
-        .addItemsList
-        .where((element) => element["isNeeded"] == "true")
-        .toList();
+    List<Map<String, dynamic>> tempList = [];
+    List<Map<String, dynamic>> items = tempList =
+        Provider.of<AddItemsProvider>(context)
+            .addItemsList
+            .where((element) => element["isNeeded"] == "true")
+            .toList();
     if (searchQuery.text.isNotEmpty) {
       items = items
           .where((element) =>
@@ -51,40 +54,61 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
                   .contains(searchQuery.text.toLowerCase()))
           .toList();
     }
-    return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        title: Text("Need To Buy Items"),
-        backgroundColor: Color.fromRGBO(0, 151, 136, 1),
-        titleTextStyle: GoogleFonts.lato(
-          color: Colors.white,
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          return;
+        }
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomePage()));
+      },
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade300,
+        appBar: AppBar(
+          title: Text("Need To Buy Items"),
+          backgroundColor: Color.fromRGBO(0, 151, 136, 1),
+          titleTextStyle: GoogleFonts.lato(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+          iconTheme: IconThemeData(color: Colors.white, size: 27),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ));
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              size: 27,
+            ),
+          ),
         ),
-        iconTheme: IconThemeData(color: Colors.white, size: 27),
-      ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-        child: items.isEmpty
-            ? Center(
-                child: Text("No Items",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey.shade600)),
-              )
-            : ListView.builder(
-                itemCount: items.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return customSearch(context);
-                  } else
-                    return CustomSwipeCard(
-                      item: items[index - 1],
-                      index: index - 1,
-                    );
-                },
-              ),
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+          child: tempList.isEmpty
+              ? Center(
+                  child: Text("No Items",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade600)),
+                )
+              : ListView.builder(
+                  itemCount: items.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return customSearch(context);
+                    } else
+                      return CustomSwipeCard(
+                        item: items[index - 1],
+                        index: index - 1,
+                      );
+                  },
+                ),
+        ),
       ),
     );
   }
