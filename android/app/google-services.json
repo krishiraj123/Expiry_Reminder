@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "131225270793",
+    "project_id": "expiry-reminder-notification",
+    "storage_bucket": "expiry-reminder-notification.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131225270793:android:16add5c9e738b64de4d6d8",
+        "android_client_info": {
+          "package_name": "com.example.expiry_reminder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEkf6XTz2p4lh24pn1N3H6ov3_pki9-sw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

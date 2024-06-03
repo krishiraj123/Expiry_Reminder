@@ -12,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../database/reminder.dart';
@@ -30,6 +31,8 @@ class _HomePageState extends State<HomePage> {
     "Sort By Name",
     "Sort By Expiry Date"
   ];
+
+  bool wantToExit = false;
 
   List<List<dynamic>> drawerItemsList = [
     [Icons.list_alt_outlined, "All Items"],
@@ -60,9 +63,34 @@ class _HomePageState extends State<HomePage> {
         .then((value) {
       setState(() {});
     });
-    MyDatabase().updateDayLeftForAllProducts().then((value) {
-      setState(() {});
-    });
+    _checkAndUpdateProducts();
+    print("just for fun");
+  }
+
+  Future<void> _checkAndUpdateProducts() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? lastCheckedDateStr = prefs.getString('lastCheckedDate');
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+
+    if (lastCheckedDateStr != null) {
+      DateTime lastCheckedDate = DateTime.parse(lastCheckedDateStr);
+
+      if (today.isAfter(lastCheckedDate)) {
+        await _updateProductsAndNotify();
+        await prefs.setString('lastCheckedDate', today.toIso8601String());
+      }
+    } else {
+      await _updateProductsAndNotify();
+      await prefs.setString('lastCheckedDate', today.toIso8601String());
+      print("from _checkUpdate");
+    }
+  }
+
+  Future<void> _updateProductsAndNotify() async {
+    await Provider.of<AddItemsProvider>(context, listen: false)
+        .updateDayLeftForAllProducts();
+    print("from _updateProducts");
   }
 
   @override
@@ -288,7 +316,9 @@ class _HomePageState extends State<HomePage> {
                           Container(
                             margin: EdgeInsets.only(top: 16),
                             child: Text(
-                              "*Swipe the card left or right",
+                              filteredItems.length == 0
+                                  ? ""
+                                  : "*Swipe the card left or right",
                               style: TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.bold),
                             ),
@@ -433,11 +463,13 @@ class _HomePageState extends State<HomePage> {
                     String playStoreLink =
                         "https://play.google.com/store/apps/details?id=com.aswdc_ExpiryReminder";
                     launchUrl(Uri.parse(playStoreLink));
+                    Navigator.of(context).pop();
                   }
                   if (drawerItemsList[index][1] == "More apps") {
                     String playStoreLink =
                         "https://play.google.com/store/apps/developer?id=Darshan+University";
                     launchUrl(Uri.parse(playStoreLink));
+                    Navigator.of(context).pop();
                   }
                   if (drawerItemsList[index][1] == "Expire Soon") {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(

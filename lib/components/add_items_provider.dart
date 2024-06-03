@@ -41,4 +41,10 @@ class AddItemsProvider extends ChangeNotifier {
     updateList();
     notifyListeners();
   }
+
+  Future<void> updateDayLeftForAllProducts() async {
+    await MyDatabase().updateDayLeftForAllProducts();
+    await updateList();
+    notifyListeners();
+  }
 }

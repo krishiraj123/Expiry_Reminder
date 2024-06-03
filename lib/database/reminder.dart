@@ -97,24 +97,53 @@ class MyDatabase {
     );
   }
 
+  // Future<void> updateDayLeftForAllProducts() async {
+  //   Database db = await initDatabase();
+  //   List<Map<String, dynamic>> products = await getDataFromProducts();
+  //
+  //   for (Map<String, dynamic> product in products) {
+  //     DateTime expiryDate = DateTime.parse(product['expiryDate']);
+  //     DateTime now = DateTime.now();
+  //     int dayLeft = (expiryDate.difference(now).inHours / 24).ceil();
+  //     int totalDays = dayLeft + 2;
+  //
+  //     if (dayLeft < 0) {
+  //       product["dayLeftInExpiryPercent"] = 1.0;
+  //     } else if (dayLeft == 0) {
+  //       product["dayLeftInExpiryPercent"] = 1.0;
+  //     } else {
+  //       product["dayLeftInExpiryPercent"] = 1 - (dayLeft / totalDays);
+  //     }
+  //     print(product["dayLeftInExpiry"]);
+  //     product['dayLeftInExpiry'] = dayLeft;
+  //     await updateProduct(product, product['PID']);
+  //   }
+  // }
+
   Future<void> updateDayLeftForAllProducts() async {
     Database db = await initDatabase();
     List<Map<String, dynamic>> products = await getDataFromProducts();
 
     for (Map<String, dynamic> product in products) {
-      DateTime expiryDate = DateTime.parse(product['expiryDate']);
+      Map<String, dynamic> mutableProduct = Map<String, dynamic>.from(product);
+
+      DateTime expiryDate = DateTime.parse(mutableProduct['expiryDate']);
       DateTime now = DateTime.now();
-      int dayLeft = (expiryDate.difference(now).inHours / 24.0).ceil();
+      int dayLeft = (expiryDate.difference(now).inHours / 24).ceil();
       int totalDays = dayLeft + 2;
+
       if (dayLeft < 0) {
-        product["dayLeftInExpiryPercent"] = 1.0;
+        mutableProduct["dayLeftInExpiryPercent"] = 1.0;
       } else if (dayLeft == 0) {
-        product["dayLeftInExpiryPercent"] = 1.0;
+        mutableProduct["dayLeftInExpiryPercent"] = 1.0;
       } else {
-        product["dayLeftInExpiryPercent"] = 1 - (dayLeft / totalDays);
+        mutableProduct["dayLeftInExpiryPercent"] = 1 - (dayLeft / totalDays);
       }
-      product['dayLeftInExpiry'] = dayLeft;
-      await updateProduct(product, product['PID']);
+
+      mutableProduct['dayLeftInExpiry'] = dayLeft;
+      print(
+          'Updating product ID ${mutableProduct['PID']} with days left: $dayLeft');
+      await updateProduct(mutableProduct, mutableProduct['PID']);
     }
   }
 }

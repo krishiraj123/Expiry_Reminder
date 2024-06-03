@@ -81,7 +81,7 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
           itemCount: items.length + 1,
           itemBuilder: (context, index) {
             if (index == 0) {
-              return customSearch(context);
+              return customSearch(context, items);
             } else
               return CustomSwipeCard(
                 item: items[index - 1],
@@ -93,7 +93,7 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
     );
   }
 
-  Widget customSearch(BuildContext context) {
+  Widget customSearch(BuildContext context, items) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -276,7 +276,7 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
         Container(
           margin: EdgeInsets.only(top: 16),
           child: Text(
-            "*Swipe the card left or right",
+            items.length == 0 ? "" : "*Swipe the card left or right",
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
           ),
         ),
