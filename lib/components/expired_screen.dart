@@ -91,7 +91,7 @@ class _ExpiredPageState extends State<ExpiredPage> {
                 itemCount: items.length + 1,
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return customSearch(context, items);
+                    return customSearch(context);
                   } else
                     index -= 1;
                   return CustomSwipeCard(
@@ -104,7 +104,7 @@ class _ExpiredPageState extends State<ExpiredPage> {
     );
   }
 
-  Widget customSearch(BuildContext context, items) {
+  Widget customSearch(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -169,13 +169,6 @@ class _ExpiredPageState extends State<ExpiredPage> {
                     ),
             )
           ],
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 16),
-          child: Text(
-            items.length == 0 ? "" : "*Swipe the card left or right",
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
         ),
       ],
     );

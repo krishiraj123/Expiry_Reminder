@@ -19,7 +19,7 @@ class _SplashPageState extends State<SplashPage> {
 
   _navigateToHome() async {
     await Future.delayed(
-      Duration(milliseconds: 3000),
+      Duration(milliseconds: 2000),
       () {},
     );
     Navigator.pushReplacement(

@@ -12,13 +12,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../database/reminder.dart';
 import 'add_items_provider.dart';
 
 class HomePage extends StatefulWidget {
+  static const route = "/home";
+
   const HomePage({super.key});
 
   @override
@@ -63,34 +64,9 @@ class _HomePageState extends State<HomePage> {
         .then((value) {
       setState(() {});
     });
-    _checkAndUpdateProducts();
-    print("just for fun");
-  }
-
-  Future<void> _checkAndUpdateProducts() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? lastCheckedDateStr = prefs.getString('lastCheckedDate');
-    DateTime now = DateTime.now();
-    DateTime today = DateTime(now.year, now.month, now.day);
-
-    if (lastCheckedDateStr != null) {
-      DateTime lastCheckedDate = DateTime.parse(lastCheckedDateStr);
-
-      if (today.isAfter(lastCheckedDate)) {
-        await _updateProductsAndNotify();
-        await prefs.setString('lastCheckedDate', today.toIso8601String());
-      }
-    } else {
-      await _updateProductsAndNotify();
-      await prefs.setString('lastCheckedDate', today.toIso8601String());
-      print("from _checkUpdate");
-    }
-  }
-
-  Future<void> _updateProductsAndNotify() async {
-    await Provider.of<AddItemsProvider>(context, listen: false)
-        .updateDayLeftForAllProducts();
-    print("from _updateProducts");
+    // MyDatabase().updateDayLeftForAllProducts().then((value) {
+    //   setState(() {});
+    // });
   }
 
   @override
@@ -312,16 +288,6 @@ class _HomePageState extends State<HomePage> {
                                       ),
                               )
                             ],
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 16),
-                            child: Text(
-                              filteredItems.length == 0
-                                  ? ""
-                                  : "*Swipe the card left or right",
-                              style: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
                           ),
                         ],
                       );

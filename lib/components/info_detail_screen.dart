@@ -83,7 +83,7 @@ class _InfoDetailPageState extends State<InfoDetailPage> {
                 itemCount: items.length + 1,
                 itemBuilder: (context, index) {
                   if (index == 0) {
-                    return customSearch(context, items);
+                    return customSearch(context);
                   } else
                     return CustomSwipeCard(
                       item: items[index - 1],
@@ -95,7 +95,7 @@ class _InfoDetailPageState extends State<InfoDetailPage> {
     );
   }
 
-  Widget customSearch(BuildContext context, items) {
+  Widget customSearch(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -160,13 +160,6 @@ class _InfoDetailPageState extends State<InfoDetailPage> {
                     ),
             )
           ],
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 16),
-          child: Text(
-            items.length == 0 ? "" : "*Swipe the card left or right",
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
         ),
       ],
     );

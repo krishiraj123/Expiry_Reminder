@@ -6,7 +6,7 @@ class CategoryProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _categoryData = [];
   List<String> dropDownMenuCategoryItemsList = [];
 
-  void fetchData() async {
+  Future<void> fetchData() async {
     _categoryData = await MyDatabase().getDataFromCategory();
     dropDownMenuCategoryItemsList = _categoryData
         .map((category) => category["C_Category"].toString())

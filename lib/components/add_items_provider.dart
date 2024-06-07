@@ -12,39 +12,33 @@ class AddItemsProvider extends ChangeNotifier {
   Future<void> addItem(Map<String, dynamic> item) async {
     // addItemsList.add(item);
     await MyDatabase().insertDataIntoProducts(item);
-    updateList();
-    notifyListeners();
+    await updateList();
   }
 
   Future<void> removeItem(int index) async {
     // addItemsList.remove(item);
     await MyDatabase().deleteProduct(index);
-    updateList();
-    notifyListeners();
+    await updateList();
   }
 
   Future<void> deleteItem(int index) async {
     await MyDatabase().tempRemoveProduct(index);
-    updateList();
-    notifyListeners();
+    await updateList();
   }
 
   Future<void> updateItem(int index, Map<String, dynamic> item) async {
     // addItemsList[index] = item;
     await MyDatabase().updateProduct(item, index);
-    updateList();
-    notifyListeners();
+    await updateList();
   }
 
   Future<void> restoreItem(int index) async {
     await MyDatabase().restoreProduct(index);
-    updateList();
-    notifyListeners();
+    await updateList();
   }
 
   Future<void> updateDayLeftForAllProducts() async {
     await MyDatabase().updateDayLeftForAllProducts();
     await updateList();
-    notifyListeners();
   }
 }

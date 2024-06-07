@@ -81,7 +81,7 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
           itemCount: items.length + 1,
           itemBuilder: (context, index) {
             if (index == 0) {
-              return customSearch(context, items);
+              return customSearch(context);
             } else
               return CustomSwipeCard(
                 item: items[index - 1],
@@ -93,7 +93,7 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
     );
   }
 
-  Widget customSearch(BuildContext context, items) {
+  Widget customSearch(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -225,14 +225,20 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
                     });
                   }
                   if (DateTime.parse(toDate.text)
-                      .compareTo(DateTime.parse(fromDate.text))
-                      .isNegative) {
-                    showDialog(
+                          .difference(DateTime.parse(fromDate.text))
+                          .inDays
+                          .isNegative ||
+                      DateTime.parse(fromDate.text)
+                              .difference(DateTime.parse(toDate.text))
+                              .inDays >
+                          0) {
+                    await showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
                         title: Text("Invalid Date Range"),
                         content: Text(
                           "Please select a valid date range. The 'To' date should be greater than or equal to the 'From' date.",
+                          style: GoogleFonts.poppins(fontSize: 14),
                         ),
                         actions: [
                           TextButton(
@@ -272,13 +278,6 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
               ),
             ),
           ],
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 16),
-          child: Text(
-            items.length == 0 ? "" : "*Swipe the card left or right",
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
         ),
       ],
     );

@@ -97,29 +97,6 @@ class MyDatabase {
     );
   }
 
-  // Future<void> updateDayLeftForAllProducts() async {
-  //   Database db = await initDatabase();
-  //   List<Map<String, dynamic>> products = await getDataFromProducts();
-  //
-  //   for (Map<String, dynamic> product in products) {
-  //     DateTime expiryDate = DateTime.parse(product['expiryDate']);
-  //     DateTime now = DateTime.now();
-  //     int dayLeft = (expiryDate.difference(now).inHours / 24).ceil();
-  //     int totalDays = dayLeft + 2;
-  //
-  //     if (dayLeft < 0) {
-  //       product["dayLeftInExpiryPercent"] = 1.0;
-  //     } else if (dayLeft == 0) {
-  //       product["dayLeftInExpiryPercent"] = 1.0;
-  //     } else {
-  //       product["dayLeftInExpiryPercent"] = 1 - (dayLeft / totalDays);
-  //     }
-  //     print(product["dayLeftInExpiry"]);
-  //     product['dayLeftInExpiry'] = dayLeft;
-  //     await updateProduct(product, product['PID']);
-  //   }
-  // }
-
   Future<void> updateDayLeftForAllProducts() async {
     Database db = await initDatabase();
     List<Map<String, dynamic>> products = await getDataFromProducts();
@@ -129,7 +106,7 @@ class MyDatabase {
 
       DateTime expiryDate = DateTime.parse(mutableProduct['expiryDate']);
       DateTime now = DateTime.now();
-      int dayLeft = (expiryDate.difference(now).inHours / 24).ceil();
+      int dayLeft = (expiryDate.difference(now).inMinutes / 1440).ceil();
       int totalDays = dayLeft + 2;
 
       if (dayLeft < 0) {
@@ -145,5 +122,18 @@ class MyDatabase {
           'Updating product ID ${mutableProduct['PID']} with days left: $dayLeft');
       await updateProduct(mutableProduct, mutableProduct['PID']);
     }
+  }
+
+  Future<List<Map<String, dynamic>>> getProductsToRemind() async {
+    Database db = await initDatabase();
+    final now = DateTime.now();
+    final formattedDate =
+        '${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+    return await db.query(
+      'Product_Detail',
+      where: 'reminderDate <= ? AND isDeleted = ?',
+      whereArgs: [formattedDate, 'false'],
+    );
   }
 }

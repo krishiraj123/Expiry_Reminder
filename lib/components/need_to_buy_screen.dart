@@ -6,8 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../database/reminder.dart';
-
 class NeedToBuyPage extends StatefulWidget {
   const NeedToBuyPage({super.key});
 
@@ -23,9 +21,6 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
     Provider.of<AddItemsProvider>(context, listen: false)
         .updateList()
         .then((value) {
-      setState(() {});
-    });
-    MyDatabase().updateDayLeftForAllProducts().then((value) {
       setState(() {});
     });
   }
@@ -100,7 +95,7 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
                   itemCount: items.length + 1,
                   itemBuilder: (context, index) {
                     if (index == 0) {
-                      return customSearch(context, items);
+                      return customSearch(context);
                     } else
                       return CustomSwipeCard(
                         item: items[index - 1],
@@ -113,7 +108,7 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
     );
   }
 
-  Widget customSearch(BuildContext context, items) {
+  Widget customSearch(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -178,13 +173,6 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
                     ),
             )
           ],
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 16),
-          child: Text(
-            items.length == 0 ? "" : "*Swipe the card left or right",
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-          ),
         ),
       ],
     );

@@ -1,3 +1,4 @@
+import 'package:expiry_reminder/api/notifications.dart';
 import 'package:expiry_reminder/components/add_items_provider.dart';
 import 'package:expiry_reminder/components/category_provider.dart';
 import 'package:expiry_reminder/database/reminder.dart';
@@ -18,6 +19,7 @@ List<dynamic> dropDownMenuReminderItemsList = [
   "1 Month Before",
 ];
 final _formKey = GlobalKey<FormState>();
+int globalCounter = 0;
 
 class AddItemPage extends StatefulWidget {
   final String? productNameValue;
@@ -77,7 +79,7 @@ class _AddItemPageState extends State<AddItemPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<CategoryProvider>(context, listen: false).fetchData();
+    _fetch();
     selectedCategoryValueOfDropDownList =
         widget.categoryValue ?? "Choose Category";
     productName = TextEditingController(text: widget.productNameValue);
@@ -95,6 +97,10 @@ class _AddItemPageState extends State<AddItemPage> {
     isSwitchActive = widget.needToBuy;
     buttonText = widget.buttonTextValue ?? "Add";
     index = widget.indexValue;
+  }
+
+  Future<void> _fetch() async {
+    await Provider.of<CategoryProvider>(context, listen: false).fetchData();
   }
 
   @override
@@ -120,7 +126,7 @@ class _AddItemPageState extends State<AddItemPage> {
       return 0.0;
     }
 
-    int daysLeft = (expiryDate.difference(now).inHours / 24.0).ceil();
+    int daysLeft = (expiryDate.difference(now).inMinutes / 1440.0).ceil();
 
     if (daysLeft < 0) {
       return 1.0;
@@ -213,7 +219,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                     return 'Name cannot be starts with number';
                                   }
                                   if (!RegExp(r'^[a-zA-Z0-9]+$')
-                                      .hasMatch(value)) {
+                                      .hasMatch(value.trim())) {
                                     return 'Name should only contain alphabets and numbers';
                                   }
                                   return null;
@@ -1059,11 +1065,18 @@ class _AddItemPageState extends State<AddItemPage> {
                                                   .isNotEmpty) &&
                                           (reminderTimeValue.text.isNotEmpty)) {
                                         if (buttonText == "Add") {
-                                          // Provider.of<CategoryProvider>(context,
-                                          //         listen: false)
-                                          //     .updateIsInUse(
-                                          //         selectedCategoryValueOfDropDownList
-                                          //             .toString());
+                                          if (reminderDate.text.isNotEmpty) {
+                                            NotificationHelper
+                                                .scheduleReminderNotifications(
+                                              productName: productName.text,
+                                              reminderDate: DateTime.parse(
+                                                  reminderDate.text),
+                                              reminderTime:
+                                                  reminderTimeValue.text,
+                                              operation: buttonText,
+                                              id: index,
+                                            );
+                                          }
                                           Provider.of<AddItemsProvider>(context,
                                                   listen: false)
                                               .addItem(
@@ -1113,8 +1126,8 @@ class _AddItemPageState extends State<AddItemPage> {
                                                                   .text)
                                                           .difference(
                                                               DateTime.now())
-                                                          .inHours /
-                                                      24.0)
+                                                          .inMinutes /
+                                                      1440.0)
                                                   .ceil(),
                                               'dayLeftInExpiryPercent':
                                                   percentageDaysLeft(
@@ -1128,15 +1141,18 @@ class _AddItemPageState extends State<AddItemPage> {
                                           );
                                           Navigator.of(context).pop(true);
                                         } else {
-                                          // Provider.of<CategoryProvider>(context,
-                                          //         listen: false)
-                                          //     .updateIsNotInUse(
-                                          //         widget.categoryValue.toString());
-                                          // Provider.of<CategoryProvider>(context,
-                                          //         listen: false)
-                                          //     .updateIsInUse(
-                                          //         selectedCategoryValueOfDropDownList
-                                          //             .toString());
+                                          if (reminderDate.text.isNotEmpty) {
+                                            NotificationHelper
+                                                .scheduleReminderNotifications(
+                                              productName: productName.text,
+                                              reminderDate: DateTime.parse(
+                                                  reminderDate.text),
+                                              reminderTime:
+                                                  reminderTimeValue.text,
+                                              operation: "update",
+                                              id: index,
+                                            );
+                                          }
                                           Provider.of<AddItemsProvider>(context,
                                                   listen: false)
                                               .updateItem(index, {
@@ -1180,8 +1196,8 @@ class _AddItemPageState extends State<AddItemPage> {
                                                                 .text)
                                                         .difference(
                                                             DateTime.now())
-                                                        .inHours /
-                                                    24.0)
+                                                        .inMinutes /
+                                                    1440.0)
                                                 .ceil(),
                                             'dayLeftInExpiryPercent':
                                                 percentageDaysLeft(
