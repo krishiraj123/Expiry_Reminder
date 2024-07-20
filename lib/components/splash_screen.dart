@@ -48,6 +48,7 @@ class _SplashPageState extends State<SplashPage> {
                     ),
                     Text(
                       "Expiry Reminder",
+                      textScaler: TextScaler.linear(1),
                       style: GoogleFonts.poppins(
                           fontSize: 25,
                           fontWeight: FontWeight.w600,

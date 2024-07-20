@@ -53,52 +53,66 @@ class _DeletedPageState extends State<DeletedPage> {
                   .contains(searchQuery.text.toLowerCase()))
           .toList();
     }
-    return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        title: Text("Deleted Items"),
-        backgroundColor: Color.fromRGBO(0, 151, 136, 1),
-        titleTextStyle: GoogleFonts.lato(
-          color: Colors.white,
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => HomePage(),
-            ));
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            size: 27,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          return;
+        }
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomePage()));
+      },
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade300,
+        appBar: AppBar(
+          title: Text(
+            "Deleted Items",
+            textScaler: TextScaler.linear(1),
           ),
+          backgroundColor: Color.fromRGBO(0, 151, 136, 1),
+          titleTextStyle: GoogleFonts.lato(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ));
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              size: 27,
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.white, size: 27),
         ),
-        iconTheme: IconThemeData(color: Colors.white, size: 27),
-      ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-        child: tempList.isEmpty
-            ? Center(
-                child: Text("No Items",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey.shade600)),
-              )
-            : ListView.builder(
-                itemCount: items.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return customSearch(context);
-                  } else {
-                    return CustomSwipeCard(
-                      item: items[index - 1],
-                      index: index - 1,
-                    );
-                  }
-                },
-              ),
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+          child: tempList.isEmpty
+              ? Center(
+                  child: Text("No Items",
+                      textScaler: TextScaler.linear(1),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey.shade600)),
+                )
+              : ListView.builder(
+                  itemCount: items.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return customSearch(context);
+                    } else {
+                      return CustomSwipeCard(
+                        item: items[index - 1],
+                        index: index - 1,
+                      );
+                    }
+                  },
+                ),
+        ),
       ),
     );
   }

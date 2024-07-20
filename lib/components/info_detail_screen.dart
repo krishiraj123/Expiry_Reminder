@@ -60,7 +60,10 @@ class _InfoDetailPageState extends State<InfoDetailPage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        title: Text(widget.catergory),
+        title: Text(
+          widget.catergory,
+          textScaler: TextScaler.linear(1),
+        ),
         backgroundColor: Color.fromRGBO(0, 151, 136, 1),
         titleTextStyle: GoogleFonts.lato(
           color: Colors.white,
@@ -74,6 +77,7 @@ class _InfoDetailPageState extends State<InfoDetailPage> {
         child: tempList.isEmpty
             ? Center(
                 child: Text("No Items",
+                    textScaler: TextScaler.linear(1),
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

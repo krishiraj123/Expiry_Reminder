@@ -1,3 +1,5 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
+import 'package:expiry_reminder/api/notifications.dart';
 import 'package:expiry_reminder/components/add_items_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -86,6 +88,7 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                         return AlertDialog(
                           content: Text(
                             "Are you sure you wish to delete this item?",
+                            textScaler: TextScaler.linear(1),
                             style: GoogleFonts.poppins(
                                 fontSize: 16, fontWeight: FontWeight.w500),
                           ),
@@ -100,7 +103,34 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                                               listen: false)
                                           .deleteItem(widget.item!["PID"]);
                                   // .removeItem(widget.item!["PID"]);
+                                  NotificationHelper.cancelNotification(
+                                      widget.item!["PID"]);
                                   Navigator.of(context).pop();
+
+                                  widget.item!["isDeleted"] == "true"
+                                      ? AnimatedSnackBar.material(
+                                              "Item Deleted Successfully",
+                                              type: AnimatedSnackBarType.error,
+                                              mobileSnackBarPosition:
+                                                  MobileSnackBarPosition.bottom,
+                                              desktopSnackBarPosition:
+                                                  DesktopSnackBarPosition
+                                                      .bottomRight,
+                                              animationDuration:
+                                                  Duration(seconds: 1))
+                                          .show(context)
+                                      : AnimatedSnackBar.material(
+                                              "Item removed Successfully",
+                                              type:
+                                                  AnimatedSnackBarType.warning,
+                                              mobileSnackBarPosition:
+                                                  MobileSnackBarPosition.bottom,
+                                              desktopSnackBarPosition:
+                                                  DesktopSnackBarPosition
+                                                      .bottomRight,
+                                              animationDuration:
+                                                  Duration(seconds: 1))
+                                          .show(context);
                                   setState(() {});
                                 },
                                 child: Text("Ok",
@@ -111,6 +141,7 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                                   Navigator.of(context).pop();
                                 },
                                 child: Text("Cancel",
+                                    textScaler: TextScaler.linear(1),
                                     style: GoogleFonts.poppins(
                                         fontWeight: FontWeight.bold))),
                           ],
@@ -127,6 +158,7 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                                 "Are you sure you wish to restore this item?",
                                 style: GoogleFonts.poppins(
                                     fontSize: 16, fontWeight: FontWeight.w500),
+                                textScaler: TextScaler.linear(1),
                               ),
                               actions: [
                                 TextButton(
@@ -135,9 +167,21 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                                               listen: false)
                                           .restoreItem(widget.item!["PID"]);
                                       Navigator.of(context).pop();
+                                      AnimatedSnackBar.material(
+                                              "Item restored Successfully",
+                                              type: AnimatedSnackBarType.info,
+                                              mobileSnackBarPosition:
+                                                  MobileSnackBarPosition.bottom,
+                                              desktopSnackBarPosition:
+                                                  DesktopSnackBarPosition
+                                                      .bottomRight,
+                                              animationDuration:
+                                                  Duration(seconds: 1))
+                                          .show(context);
                                       setState(() {});
                                     },
                                     child: Text("Ok",
+                                        textScaler: TextScaler.linear(1),
                                         style: GoogleFonts.poppins(
                                             fontWeight: FontWeight.bold))),
                                 TextButton(
@@ -145,6 +189,7 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                                       Navigator.of(context).pop();
                                     },
                                     child: Text("Cancel",
+                                        textScaler: TextScaler.linear(1),
                                         style: GoogleFonts.poppins(
                                             fontWeight: FontWeight.bold))),
                               ],
@@ -215,9 +260,11 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                               fontWeight: FontWeight.w600,
                               color: Colors.blue.shade500,
                             ),
+                            textScaler: TextScaler.linear(1),
                           ),
                           Text(
                               "Days ${widget.item!['dayLeftInExpiry'] < 0 ? 'Ago' : 'Left'}",
+                              textScaler: TextScaler.linear(1),
                               style: GoogleFonts.poppins(
                                   fontSize: 13, color: Colors.grey.shade700)),
                         ],
@@ -236,6 +283,7 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                                   .toString()
                                   .toUpperCase(),
                               overflow: TextOverflow.ellipsis,
+                              textScaler: TextScaler.linear(1),
                               style: GoogleFonts.lato(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
@@ -247,6 +295,7 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                             Text(
                               "Exp Date: ${widget.item!["expiryDate"]}",
                               overflow: TextOverflow.ellipsis,
+                              textScaler: TextScaler.linear(1),
                               style: GoogleFonts.lato(
                                   fontSize: 15, letterSpacing: 1.4),
                             ),

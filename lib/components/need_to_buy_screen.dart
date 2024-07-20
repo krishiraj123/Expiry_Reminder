@@ -61,7 +61,10 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
       child: Scaffold(
         backgroundColor: Colors.grey.shade300,
         appBar: AppBar(
-          title: Text("Need To Buy Items"),
+          title: Text(
+            "Need To Buy Items",
+            textScaler: TextScaler.linear(1),
+          ),
           backgroundColor: Color.fromRGBO(0, 151, 136, 1),
           titleTextStyle: GoogleFonts.lato(
             color: Colors.white,
@@ -86,6 +89,7 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
           child: tempList.isEmpty
               ? Center(
                   child: Text("No Items",
+                      textScaler: TextScaler.linear(1),
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

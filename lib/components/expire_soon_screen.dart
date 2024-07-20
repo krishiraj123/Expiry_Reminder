@@ -52,42 +52,55 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
                   .contains(searchQuery.text.toLowerCase()))
           .toList();
     }
-    return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        title: Text("Expire Soon"),
-        backgroundColor: Color.fromRGBO(0, 151, 136, 1),
-        titleTextStyle: GoogleFonts.lato(
-          color: Colors.white,
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => HomePage(),
-            ));
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            size: 27,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) {
+          return;
+        }
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomePage()));
+      },
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade300,
+        appBar: AppBar(
+          title: Text(
+            "Expire Soon",
+            textScaler: TextScaler.linear(1),
           ),
+          backgroundColor: Color.fromRGBO(0, 151, 136, 1),
+          titleTextStyle: GoogleFonts.lato(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ));
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              size: 27,
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.white, size: 27),
         ),
-        iconTheme: IconThemeData(color: Colors.white, size: 27),
-      ),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-        child: ListView.builder(
-          itemCount: items.length + 1,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return customSearch(context);
-            } else
-              return CustomSwipeCard(
-                item: items[index - 1],
-                index: index - 1,
-              );
-          },
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+          child: ListView.builder(
+            itemCount: items.length + 1,
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return customSearch(context);
+              } else
+                return CustomSwipeCard(
+                  item: items[index - 1],
+                  index: index - 1,
+                );
+            },
+          ),
         ),
       ),
     );
@@ -235,14 +248,21 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
                     await showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text("Invalid Date Range"),
+                        title: Text(
+                          "Invalid Date Range",
+                          textScaler: TextScaler.linear(1),
+                        ),
                         content: Text(
                           "Please select a valid date range. The 'To' date should be greater than or equal to the 'From' date.",
+                          textScaler: TextScaler.linear(1),
                           style: GoogleFonts.poppins(fontSize: 14),
                         ),
                         actions: [
                           TextButton(
-                            child: Text("Ok"),
+                            child: Text(
+                              "Ok",
+                              textScaler: TextScaler.linear(1),
+                            ),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },

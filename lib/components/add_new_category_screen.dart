@@ -42,6 +42,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
               color: const Color.fromRGBO(0, 151, 136, 1),
               child: Text(
                 "Add Category",
+                textScaler: TextScaler.linear(1),
                 style: GoogleFonts.lato(
                     fontSize: 20,
                     color: Colors.white,
@@ -132,6 +133,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                     },
                     child: Text(
                       widget.category == null ? "Add" : "Update",
+                      textScaler: TextScaler.linear(1),
                       style: GoogleFonts.lato(
                           color: Colors.white,
                           fontSize: 18,
@@ -150,6 +152,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                     },
                     child: Text(
                       "cancel",
+                      textScaler: TextScaler.linear(1),
                       style: GoogleFonts.lato(
                           color: Colors.white,
                           fontSize: 18,

@@ -1,3 +1,4 @@
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:expiry_reminder/api/notifications.dart';
 import 'package:expiry_reminder/components/add_items_provider.dart';
 import 'package:expiry_reminder/components/category_provider.dart';
@@ -177,6 +178,7 @@ class _AddItemPageState extends State<AddItemPage> {
           iconTheme: const IconThemeData(color: Colors.white, size: 28),
           title: Text(
             "Add Item",
+            textScaler: TextScaler.linear(1),
             style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w500, color: Colors.white),
           ),
@@ -218,10 +220,10 @@ class _AddItemPageState extends State<AddItemPage> {
                                   if (RegExp(r'^[0-9]').hasMatch(value!)) {
                                     return 'Name cannot be starts with number';
                                   }
-                                  if (!RegExp(r'^[a-zA-Z0-9]+$')
-                                      .hasMatch(value.trim())) {
-                                    return 'Name should only contain alphabets and numbers';
-                                  }
+                                  // if (!RegExp(r'^[a-zA-Z0-9]+$')
+                                  //     .hasMatch(value.trim())) {
+                                  //   return 'Name should only contain alphabets and numbers';
+                                  // }
                                   return null;
                                 },
                                 decoration: InputDecoration(
@@ -259,6 +261,8 @@ class _AddItemPageState extends State<AddItemPage> {
                               child: TextFormField(
                                 autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
+                                keyboardType: TextInputType.numberWithOptions(
+                                    decimal: true),
                                 enabled: widget.isEnabled,
                                 validator: (value) {
                                   if (value != null && value.isNotEmpty) {
@@ -347,6 +351,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                     value: value,
                                     child: Text(
                                       value,
+                                      textScaler: TextScaler.linear(1),
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   );
@@ -381,6 +386,8 @@ class _AddItemPageState extends State<AddItemPage> {
                                                       0, 151, 136, 1),
                                                   child: Text(
                                                     "Add Category",
+                                                    textScaler:
+                                                        TextScaler.linear(1),
                                                     style: GoogleFonts.lato(
                                                         fontSize: 20,
                                                         color: Colors.white,
@@ -498,6 +505,9 @@ class _AddItemPageState extends State<AddItemPage> {
                                                                   },
                                                         child: Text(
                                                           "Add",
+                                                          textScaler:
+                                                              TextScaler.linear(
+                                                                  1),
                                                           style:
                                                               GoogleFonts.lato(
                                                                   color: Colors
@@ -523,6 +533,9 @@ class _AddItemPageState extends State<AddItemPage> {
                                                         },
                                                         child: Text(
                                                           "cancel",
+                                                          textScaler:
+                                                              TextScaler.linear(
+                                                                  1),
                                                           style:
                                                               GoogleFonts.lato(
                                                                   color: Colors
@@ -565,6 +578,8 @@ class _AddItemPageState extends State<AddItemPage> {
                                 autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
                                 enabled: widget.isEnabled,
+                                keyboardType: TextInputType.numberWithOptions(
+                                    decimal: true),
                                 validator: (value) {
                                   if (value != null && value.isNotEmpty) {
                                     if (!RegExp(r"^[0-9]+$").hasMatch(value)) {
@@ -843,6 +858,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                       enabled: widget.isEnabled,
                                       child: Text(
                                         value,
+                                        textScaler: TextScaler.linear(1),
                                         style: TextStyle(fontSize: 18),
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -999,6 +1015,7 @@ class _AddItemPageState extends State<AddItemPage> {
                             ),
                             Text(
                               "Need To Buy",
+                              textScaler: TextScaler.linear(1),
                               style: GoogleFonts.lato(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 18,
@@ -1035,6 +1052,7 @@ class _AddItemPageState extends State<AddItemPage> {
                               ),
                               child: Text(
                                 buttonText.toUpperCase(),
+                                textScaler: TextScaler.linear(1),
                                 style: GoogleFonts.lato(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -1042,16 +1060,25 @@ class _AddItemPageState extends State<AddItemPage> {
                               ),
                               onPressed: !widget.isEnabled
                                   ? null
-                                  : () {
+                                  : () async {
                                       if (_formKey.currentState!.validate()) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: buttonText == "Add"
-                                                ? const Text("Item Added")
-                                                : const Text("Item Updated"),
-                                          ),
-                                        );
+                                        AnimatedSnackBar.material(
+                                                buttonText == "Add"
+                                                    ? "Item Added Successfully"
+                                                    : "Item updated Successfully",
+                                                type: AnimatedSnackBarType
+                                                    .success,
+                                                mobileSnackBarPosition:
+                                                    MobileSnackBarPosition
+                                                        .bottom,
+                                                animationDuration:
+                                                    Duration(seconds: 1),
+                                                desktopSnackBarPosition:
+                                                    DesktopSnackBarPosition
+                                                        .bottomRight,
+                                                animationCurve:
+                                                    Curves.fastOutSlowIn)
+                                            .show(context);
                                       }
                                       if (productName.text.isNotEmpty &&
                                           (selectedCategoryValueOfDropDownList
@@ -1231,6 +1258,7 @@ class _AddItemPageState extends State<AddItemPage> {
       builder: (context) => AlertDialog(
         content: Text(
           "Are you sure you want to exit?",
+          textScaler: TextScaler.linear(1),
           style: GoogleFonts.lato(fontSize: 17, fontWeight: FontWeight.bold),
         ),
         actions: [
@@ -1240,6 +1268,7 @@ class _AddItemPageState extends State<AddItemPage> {
             },
             child: Text(
               "cancel",
+              textScaler: TextScaler.linear(1),
               style: TextStyle(fontSize: 16),
             ),
           ),
@@ -1249,6 +1278,7 @@ class _AddItemPageState extends State<AddItemPage> {
             },
             child: Text(
               "discard",
+              textScaler: TextScaler.linear(1),
               style: TextStyle(fontSize: 16),
             ),
           ),
@@ -1265,11 +1295,13 @@ class _AddItemPageState extends State<AddItemPage> {
           return AlertDialog(
             title: Text(
               "Warning!",
+              textScaler: TextScaler.linear(1),
               style: GoogleFonts.poppins(
                   fontSize: 22, fontWeight: FontWeight.w500),
             ),
             content: Text(
               "You can't select a reminder date that is in the past.",
+              textScaler: TextScaler.linear(1),
               style: GoogleFonts.poppins(
                   fontSize: 15, fontWeight: FontWeight.w400),
             ),
@@ -1280,6 +1312,7 @@ class _AddItemPageState extends State<AddItemPage> {
                   },
                   child: Text(
                     "Ok",
+                    textScaler: TextScaler.linear(1),
                     style: GoogleFonts.poppins(
                         fontSize: 16, fontWeight: FontWeight.w400),
                   ))

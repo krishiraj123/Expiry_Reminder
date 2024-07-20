@@ -27,7 +27,7 @@ class RatingPage {
               foregroundColor: Colors.white,
               backgroundColor: Colors.green,
               // Text color
-              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
@@ -51,6 +51,7 @@ class RatingPage {
             },
             child: Text(
               'Rate Now',
+              textScaler: TextScaler.linear(1),
               style: TextStyle(fontSize: 16),
             ),
           ),
@@ -61,6 +62,7 @@ class RatingPage {
             },
             child: Text(
               'Maybe Later',
+              textScaler: TextScaler.linear(1),
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ),

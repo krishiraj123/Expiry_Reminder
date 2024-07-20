@@ -98,6 +98,8 @@ class _HomePageState extends State<HomePage> {
                   .contains(searchQuery.text.toLowerCase()))
           .toList();
     }
+    bool canPop = false;
+
     return Scaffold(
         backgroundColor: Colors.grey.shade300,
         appBar: AppBar(
@@ -105,6 +107,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: const Color.fromRGBO(0, 151, 136, 1),
           title: Text(
             "Expiry Reminder",
+            textScaler: TextScaler.linear(1),
             style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.w500,
@@ -129,6 +132,7 @@ class _HomePageState extends State<HomePage> {
                   return PopupMenuItem(
                     child: Text(
                       val,
+                      textScaler: TextScaler.linear(1),
                       style: GoogleFonts.lato(
                           fontSize: 18,
                           color: Colors.white,
@@ -343,6 +347,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Text(
                         "Expiry Reminder",
+                        textScaler: TextScaler.linear(1),
                         style: GoogleFonts.lato(
                           fontSize: 25,
                           color: Colors.white,
@@ -354,6 +359,7 @@ class _HomePageState extends State<HomePage> {
                         style: GoogleFonts.lato(
                           color: Colors.white70,
                         ),
+                        textScaler: TextScaler.linear(1),
                       ),
                     ],
                   ),
@@ -369,6 +375,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 title: Text(
                   drawerItemsList[index][1].toString(),
+                  textScaler: TextScaler.linear(1),
                   style: GoogleFonts.lato(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -394,7 +401,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   }
                   if (drawerItemsList[index][1] == "Developer") {
-                    Navigator.of(context).push(
+                    Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context) => DeveloperPage()),
                     );
                   }

@@ -16,9 +16,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MyDatabase().copyPasteAssetFileToRoot();
   await MyDatabase().updateDayLeftForAllProducts();
-  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  tz.initializeTimeZones();
   await NotificationHelper.init();
+  tz.initializeTimeZones();
   runApp(const MyApp());
 }
 
@@ -48,29 +47,6 @@ class _MyAppState extends State<MyApp> {
       }
     }
   }
-
-  // Future<void> _checkAndUpdateProducts() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   String? lastCheckedDateStr = prefs.getString('lastCheckedDate');
-  //   DateTime now = DateTime.now();
-  //   DateTime today = DateTime(now.year, now.month, now.day);
-  //
-  //   if (lastCheckedDateStr != null) {
-  //     DateTime lastCheckedDate = DateTime.parse(lastCheckedDateStr);
-  //
-  //     if (today.isAfter(lastCheckedDate)) {
-  //       await _updateProductsAndNotify();
-  //       await prefs.setString('lastCheckedDate', today.toIso8601String());
-  //     }
-  //   } else {
-  //     await _updateProductsAndNotify();
-  //     await prefs.setString('lastCheckedDate', today.toIso8601String());
-  //   }
-  // }
-  //
-  // Future<void> _updateProductsAndNotify() {
-  //   return MyDatabase().updateDayLeftForAllProducts();
-  // }
 
   @override
   Widget build(BuildContext context) {
