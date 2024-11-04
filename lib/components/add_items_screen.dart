@@ -3,13 +3,14 @@ import 'package:expiry_reminder/api/notifications.dart';
 import 'package:expiry_reminder/components/add_items_provider.dart';
 import 'package:expiry_reminder/components/category_provider.dart';
 import 'package:expiry_reminder/database/reminder.dart';
+import 'package:expiry_reminder/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 List<dynamic> dropDownMenuReminderItemsList = [
-  "Choose Reminder Date",
+  "Current Date",
   "Never",
   "On Specific Date",
   "1 Day Before",
@@ -177,10 +178,14 @@ class _AddItemPageState extends State<AddItemPage> {
           backgroundColor: const Color.fromRGBO(0, 151, 136, 1),
           iconTheme: const IconThemeData(color: Colors.white, size: 28),
           title: Text(
-            "Add Item",
+            buttonText == "Add"
+                ? "Add Item"
+                : widget.isEnabled
+                    ? "Update Item"
+                    : "Item Info",
             textScaler: TextScaler.linear(1),
             style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w500, color: Colors.white),
+                fontWeight: FontWeight.w500, color: Colors.white, fontSize: 20),
           ),
         ),
         body: Form(
@@ -227,10 +232,31 @@ class _AddItemPageState extends State<AddItemPage> {
                                   return null;
                                 },
                                 decoration: InputDecoration(
-                                  labelText: "Name\*",
-                                  labelStyle: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18),
+                                  labelText: null,
+                                  label: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "Name", // Regular label text
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
+                                            color: Colors
+                                                .black54, // Regular color for label text
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: " *", // Asterisk in red
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
+                                            color: Colors
+                                                .red, // Set asterisk color to red
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   floatingLabelStyle:
                                       const TextStyle(color: Colors.black54),
                                   focusedBorder: const UnderlineInputBorder(
@@ -274,7 +300,9 @@ class _AddItemPageState extends State<AddItemPage> {
                                 },
                                 controller: price,
                                 decoration: InputDecoration(
-                                  labelText: "Price",
+                                  labelText: null,
+                                  label:
+                                      GlobalTextSettings.FormFieldText("Price"),
                                   labelStyle: GoogleFonts.lato(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 18),
@@ -329,7 +357,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                 ),
                                 dropdownColor: Colors.grey.shade300,
                                 style: GoogleFonts.lato(
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     color: Colors.black54,
                                     fontWeight: FontWeight.w600),
                                 iconSize: 40,
@@ -434,7 +462,7 @@ class _AddItemPageState extends State<AddItemPage> {
                                                           width: 2,
                                                         ),
                                                       ),
-                                                      labelText: "Category\*",
+                                                      labelText: "Category",
                                                       labelStyle:
                                                           GoogleFonts.lato(
                                                         fontSize: 18,
@@ -590,7 +618,9 @@ class _AddItemPageState extends State<AddItemPage> {
                                 },
                                 controller: quantity,
                                 decoration: InputDecoration(
-                                  labelText: "${"Quantity"}",
+                                  // labelText: "${"Quantity"}",
+                                  label: GlobalTextSettings.FormFieldText(
+                                      "Quantity"),
                                   labelStyle: GoogleFonts.lato(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 18),
@@ -627,10 +657,9 @@ class _AddItemPageState extends State<AddItemPage> {
                                     fontSize: 18,
                                     overflow: TextOverflow.ellipsis),
                                 decoration: InputDecoration(
-                                  labelText: "${"Manufacture Date"}",
-                                  labelStyle: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18),
+                                  // labelText: "${"Manufacture Date"}",
+                                  label: GlobalTextSettings.FormFieldText(
+                                      "Manufacture Date", 16),
                                   floatingLabelStyle:
                                       const TextStyle(color: Colors.black54),
                                   focusedBorder: const UnderlineInputBorder(
@@ -694,10 +723,29 @@ class _AddItemPageState extends State<AddItemPage> {
                                     fontSize: 18,
                                     overflow: TextOverflow.ellipsis),
                                 decoration: InputDecoration(
-                                  labelText: "${"Expiry Date\*"}",
-                                  labelStyle: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18),
+                                  // labelText: "${"Expiry Date\*"}",
+                                  label: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "Expiry Date",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: " *",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   floatingLabelStyle:
                                       const TextStyle(color: Colors.black54),
                                   focusedBorder: const UnderlineInputBorder(
@@ -780,10 +828,30 @@ class _AddItemPageState extends State<AddItemPage> {
                                     fontSize: 18,
                                     overflow: TextOverflow.ellipsis),
                                 decoration: InputDecoration(
-                                  labelText: "${"Reminder Time"}",
-                                  labelStyle: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18),
+                                  // labelText: "${"Reminder Time"}",
+                                  label: RichText(
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: "Reminder Time",
+                                          // Regular label text
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 17,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: " *",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 17,
+                                            color: Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   floatingLabelStyle:
                                       const TextStyle(color: Colors.black54),
                                   focusedBorder: const UnderlineInputBorder(
@@ -854,15 +922,10 @@ class _AddItemPageState extends State<AddItemPage> {
                                   items: dropDownMenuReminderItemsList
                                       .map((value) {
                                     return DropdownMenuItem(
-                                      value: value,
-                                      enabled: widget.isEnabled,
-                                      child: Text(
-                                        value,
-                                        textScaler: TextScaler.linear(1),
-                                        style: TextStyle(fontSize: 18),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
+                                        value: value,
+                                        enabled: widget.isEnabled,
+                                        child: GlobalTextSettings.FormFieldText(
+                                            value, 18));
                                   }).toList(),
                                   onChanged: (newValue) async {
                                     if (newValue.toString() == "Never") {
@@ -876,7 +939,8 @@ class _AddItemPageState extends State<AddItemPage> {
                                         initialDate: DateTime.now(),
                                         firstDate: DateTime.now()
                                             .subtract(Duration(days: 0)),
-                                        lastDate: DateTime(2100),
+                                        lastDate: DateTime.parse(
+                                            expiryDateValue.text),
                                       );
                                       if (_datePicked!
                                           .difference(DateTime.now())
@@ -943,12 +1007,11 @@ class _AddItemPageState extends State<AddItemPage> {
                                 // readOnly: true,
                                 style: const TextStyle(
                                     fontSize: 18,
-                                    overflow: TextOverflow.ellipsis),
+                                    overflow: TextOverflow.ellipsis,
+                                    color: Colors.black54),
                                 decoration: InputDecoration(
-                                  labelText: "${"Reminder Date"}",
-                                  labelStyle: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18),
+                                  label: GlobalTextSettings.FormFieldText(
+                                      "Reminder Date"),
                                   floatingLabelStyle:
                                       const TextStyle(color: Colors.black54),
                                   focusedBorder: const UnderlineInputBorder(
@@ -979,10 +1042,8 @@ class _AddItemPageState extends State<AddItemPage> {
                                 controller: Note,
                                 enabled: widget.isEnabled,
                                 decoration: InputDecoration(
-                                  labelText: "Note",
-                                  labelStyle: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18),
+                                  label:
+                                      GlobalTextSettings.FormFieldText("Note"),
                                   floatingLabelStyle:
                                       const TextStyle(color: Colors.black54),
                                   focusedBorder: const UnderlineInputBorder(
@@ -1013,14 +1074,7 @@ class _AddItemPageState extends State<AddItemPage> {
                             const SizedBox(
                               width: 10,
                             ),
-                            Text(
-                              "Need To Buy",
-                              textScaler: TextScaler.linear(1),
-                              style: GoogleFonts.lato(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18,
-                                  color: Colors.grey.shade600),
-                            ),
+                            GlobalTextSettings.FormFieldText("Need To Buy"),
                             const SizedBox(
                               width: 10,
                             ),
@@ -1044,8 +1098,8 @@ class _AddItemPageState extends State<AddItemPage> {
                         ),
                         //-------------------Need To Buy Ends------------------
                         Container(
-                          margin: const EdgeInsets.only(top: 15),
-                          child: ElevatedButton(
+                            margin: const EdgeInsets.only(top: 15),
+                            child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
                                     const Color.fromRGBO(0, 151, 136, 1),
@@ -1062,184 +1116,231 @@ class _AddItemPageState extends State<AddItemPage> {
                                   ? null
                                   : () async {
                                       if (_formKey.currentState!.validate()) {
-                                        AnimatedSnackBar.material(
-                                                buttonText == "Add"
-                                                    ? "Item Added Successfully"
-                                                    : "Item updated Successfully",
-                                                type: AnimatedSnackBarType
-                                                    .success,
-                                                mobileSnackBarPosition:
-                                                    MobileSnackBarPosition
-                                                        .bottom,
-                                                animationDuration:
-                                                    Duration(seconds: 1),
-                                                desktopSnackBarPosition:
-                                                    DesktopSnackBarPosition
-                                                        .bottomRight,
-                                                animationCurve:
-                                                    Curves.fastOutSlowIn)
-                                            .show(context);
-                                      }
-                                      if (productName.text.isNotEmpty &&
-                                          (selectedCategoryValueOfDropDownList
-                                                  .isNotEmpty &&
-                                              selectedCategoryValueOfDropDownList !=
-                                                  'Choose Category') &&
-                                          expiryDateValue.text.isNotEmpty &&
-                                          (selectedReminderDropDownValue !=
-                                                  'Choose Reminder Date' &&
-                                              selectedReminderDropDownValue
-                                                  .isNotEmpty) &&
-                                          (reminderTimeValue.text.isNotEmpty)) {
-                                        if (buttonText == "Add") {
-                                          if (reminderDate.text.isNotEmpty) {
-                                            NotificationHelper
-                                                .scheduleReminderNotifications(
-                                              productName: productName.text,
-                                              reminderDate: DateTime.parse(
-                                                  reminderDate.text),
-                                              reminderTime:
-                                                  reminderTimeValue.text,
-                                              operation: buttonText,
-                                              id: index,
+                                        bool? confirmAction = await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                "Confirm ${buttonText}",
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                              content: Text(
+                                                "Are you sure you want to ${buttonText.toLowerCase()} this item?",
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 13,
+                                                    fontWeight:
+                                                        FontWeight.w400),
+                                              ),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(false);
+                                                  },
+                                                  child: Text("Cancel"),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context)
+                                                        .pop(true);
+                                                  },
+                                                  child: Text("Confirm"),
+                                                ),
+                                              ],
                                             );
-                                          }
-                                          Provider.of<AddItemsProvider>(context,
-                                                  listen: false)
-                                              .addItem(
-                                            ({
-                                              'productName':
-                                                  productName.text.trim(),
-                                              'productPrice': price.text.isEmpty
-                                                  ? null
-                                                  : price.text.trim(),
-                                              'category':
-                                                  selectedCategoryValueOfDropDownList ==
-                                                          'Choose Category'
-                                                      ? null
-                                                      : selectedCategoryValueOfDropDownList
-                                                          .trim(),
-                                              'productQuantity':
-                                                  quantity.text.isEmpty
-                                                      ? null
-                                                      : quantity.text.trim(),
-                                              'manufacturingDate':
-                                                  manufacturingDateValue
-                                                          .text.isEmpty
-                                                      ? null
-                                                      : manufacturingDateValue
-                                                          .text
-                                                          .trim(),
-                                              'expiryDate':
-                                                  expiryDateValue.text.trim(),
-                                              'reminderTime':
-                                                  reminderTimeValue.text.trim(),
-                                              'choosedReminder':
-                                                  selectedReminderDropDownValue ==
-                                                              "Choose Reminder Date" ||
-                                                          selectedReminderDropDownValue ==
-                                                              "Never"
-                                                      ? null
-                                                      : selectedReminderDropDownValue
-                                                          .trim(),
-                                              'note': Note.text.isEmpty
-                                                  ? null
-                                                  : Note.text.trim(),
-                                              'isNeeded': isSwitchActive
-                                                  .toString()
-                                                  .trim(),
-                                              'dayLeftInExpiry': (DateTime.parse(
-                                                              expiryDateValue
-                                                                  .text)
-                                                          .difference(
-                                                              DateTime.now())
-                                                          .inMinutes /
-                                                      1440.0)
-                                                  .ceil(),
-                                              'dayLeftInExpiryPercent':
-                                                  percentageDaysLeft(
-                                                      expiryDateValue.text),
-                                              "reminderDate":
-                                                  reminderDate.text.isNotEmpty
-                                                      ? reminderDate.text.trim()
-                                                      : null,
-                                              "isDeleted": "false"
-                                            }),
-                                          );
-                                          Navigator.of(context).pop(true);
-                                        } else {
-                                          if (reminderDate.text.isNotEmpty) {
-                                            NotificationHelper
-                                                .scheduleReminderNotifications(
-                                              productName: productName.text,
-                                              reminderDate: DateTime.parse(
-                                                  reminderDate.text),
-                                              reminderTime:
-                                                  reminderTimeValue.text,
-                                              operation: "update",
-                                              id: index,
-                                            );
-                                          }
-                                          Provider.of<AddItemsProvider>(context,
-                                                  listen: false)
-                                              .updateItem(index, {
-                                            'productName': productName.text,
-                                            'productPrice': price.text.isEmpty
-                                                ? null
-                                                : price.text,
-                                            'category':
-                                                selectedCategoryValueOfDropDownList ==
-                                                        'Choose Category'
+                                          },
+                                        );
+
+                                        if (confirmAction == true) {
+                                          AnimatedSnackBar.material(
+                                            buttonText == "Add"
+                                                ? "Item Added Successfully"
+                                                : "Item Updated Successfully",
+                                            type: AnimatedSnackBarType.success,
+                                            mobileSnackBarPosition:
+                                                MobileSnackBarPosition.bottom,
+                                            animationDuration:
+                                                Duration(seconds: 1),
+                                            desktopSnackBarPosition:
+                                                DesktopSnackBarPosition
+                                                    .bottomRight,
+                                            animationCurve:
+                                                Curves.fastOutSlowIn,
+                                          ).show(context);
+
+                                          // Validate all fields for specific requirements before proceeding
+                                          if (productName.text.isNotEmpty &&
+                                              (selectedCategoryValueOfDropDownList
+                                                      .isNotEmpty &&
+                                                  selectedCategoryValueOfDropDownList !=
+                                                      'Choose Category') &&
+                                              expiryDateValue.text.isNotEmpty &&
+                                              (selectedReminderDropDownValue !=
+                                                      'Choose Reminder Date' &&
+                                                  selectedReminderDropDownValue
+                                                      .isNotEmpty) &&
+                                              (reminderTimeValue
+                                                  .text.isNotEmpty)) {
+                                            if (buttonText == "Add") {
+                                              if (reminderDate
+                                                  .text.isNotEmpty) {
+                                                NotificationHelper
+                                                    .scheduleReminderNotifications(
+                                                  productName: productName.text,
+                                                  reminderDate: DateTime.parse(
+                                                      reminderDate.text),
+                                                  reminderTime:
+                                                      reminderTimeValue.text,
+                                                  operation: buttonText,
+                                                  id: index,
+                                                );
+                                              }
+                                              Provider.of<AddItemsProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .addItem({
+                                                'productName':
+                                                    productName.text.trim(),
+                                                'productPrice':
+                                                    price.text.isEmpty
+                                                        ? null
+                                                        : price.text.trim(),
+                                                'category':
+                                                    selectedCategoryValueOfDropDownList ==
+                                                            'Choose Category'
+                                                        ? null
+                                                        : selectedCategoryValueOfDropDownList
+                                                            .trim(),
+                                                'productQuantity':
+                                                    quantity.text.isEmpty
+                                                        ? null
+                                                        : quantity.text.trim(),
+                                                'manufacturingDate':
+                                                    manufacturingDateValue
+                                                            .text.isEmpty
+                                                        ? null
+                                                        : manufacturingDateValue
+                                                            .text
+                                                            .trim(),
+                                                'expiryDate':
+                                                    expiryDateValue.text.trim(),
+                                                'reminderTime':
+                                                    reminderTimeValue.text
+                                                        .trim(),
+                                                'choosedReminder':
+                                                    selectedReminderDropDownValue ==
+                                                                "Choose Reminder Date" ||
+                                                            selectedReminderDropDownValue ==
+                                                                "Never"
+                                                        ? null
+                                                        : selectedReminderDropDownValue
+                                                            .trim(),
+                                                'note': Note.text.isEmpty
                                                     ? null
-                                                    : selectedCategoryValueOfDropDownList,
-                                            'productQuantity':
-                                                quantity.text.isEmpty
-                                                    ? null
-                                                    : quantity.text,
-                                            'manufacturingDate':
-                                                manufacturingDateValue
-                                                        .text.isEmpty
-                                                    ? null
-                                                    : manufacturingDateValue
-                                                        .text,
-                                            'expiryDate': expiryDateValue.text,
-                                            'reminderTime':
-                                                reminderTimeValue.text,
-                                            'choosedReminder':
-                                                selectedReminderDropDownValue ==
-                                                            "Choose Reminder Date" ||
-                                                        selectedReminderDropDownValue ==
-                                                            "Never"
-                                                    ? null
-                                                    : selectedReminderDropDownValue,
-                                            'note': Note.text.isEmpty
-                                                ? null
-                                                : Note.text,
-                                            'isNeeded': isSwitchActive
-                                                .toString()
-                                                .trim(),
-                                            'dayLeftInExpiry': (DateTime.parse(
-                                                            expiryDateValue
-                                                                .text)
-                                                        .difference(
-                                                            DateTime.now())
-                                                        .inMinutes /
-                                                    1440.0)
-                                                .ceil(),
-                                            'dayLeftInExpiryPercent':
-                                                percentageDaysLeft(
-                                                    expiryDateValue.text),
-                                            "reminderDate":
-                                                reminderDate.text.isNotEmpty
-                                                    ? reminderDate.text
+                                                    : Note.text.trim(),
+                                                'isNeeded': isSwitchActive
+                                                    .toString()
+                                                    .trim(),
+                                                'dayLeftInExpiry': (DateTime.parse(
+                                                                expiryDateValue
+                                                                    .text)
+                                                            .difference(
+                                                                DateTime.now())
+                                                            .inMinutes /
+                                                        1440.0)
+                                                    .ceil(),
+                                                'dayLeftInExpiryPercent':
+                                                    percentageDaysLeft(
+                                                        expiryDateValue.text),
+                                                "reminderDate": reminderDate
+                                                        .text.isNotEmpty
+                                                    ? reminderDate.text.trim()
                                                     : null,
-                                            "isDeleted": "false"
-                                          });
-                                          Navigator.of(context).pop(true);
+                                                "isDeleted": "false"
+                                              });
+                                              Navigator.of(context).pop(true);
+                                            } else {
+                                              if (reminderDate
+                                                  .text.isNotEmpty) {
+                                                NotificationHelper
+                                                    .scheduleReminderNotifications(
+                                                  productName: productName.text,
+                                                  reminderDate: DateTime.parse(
+                                                      reminderDate.text),
+                                                  reminderTime:
+                                                      reminderTimeValue.text,
+                                                  operation: "update",
+                                                  id: index,
+                                                );
+                                              }
+                                              Provider.of<AddItemsProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .updateItem(index, {
+                                                'productName': productName.text,
+                                                'productPrice':
+                                                    price.text.isEmpty
+                                                        ? null
+                                                        : price.text,
+                                                'category':
+                                                    selectedCategoryValueOfDropDownList ==
+                                                            'Choose Category'
+                                                        ? null
+                                                        : selectedCategoryValueOfDropDownList,
+                                                'productQuantity':
+                                                    quantity.text.isEmpty
+                                                        ? null
+                                                        : quantity.text,
+                                                'manufacturingDate':
+                                                    manufacturingDateValue
+                                                            .text.isEmpty
+                                                        ? null
+                                                        : manufacturingDateValue
+                                                            .text,
+                                                'expiryDate':
+                                                    expiryDateValue.text,
+                                                'reminderTime':
+                                                    reminderTimeValue.text,
+                                                'choosedReminder':
+                                                    selectedReminderDropDownValue ==
+                                                                "Choose Reminder Date" ||
+                                                            selectedReminderDropDownValue ==
+                                                                "Never"
+                                                        ? null
+                                                        : selectedReminderDropDownValue,
+                                                'note': Note.text.isEmpty
+                                                    ? null
+                                                    : Note.text,
+                                                'isNeeded': isSwitchActive
+                                                    .toString()
+                                                    .trim(),
+                                                'dayLeftInExpiry': (DateTime.parse(
+                                                                expiryDateValue
+                                                                    .text)
+                                                            .difference(
+                                                                DateTime.now())
+                                                            .inMinutes /
+                                                        1440.0)
+                                                    .ceil(),
+                                                'dayLeftInExpiryPercent':
+                                                    percentageDaysLeft(
+                                                        expiryDateValue.text),
+                                                "reminderDate":
+                                                    reminderDate.text.isNotEmpty
+                                                        ? reminderDate.text
+                                                        : null,
+                                                "isDeleted": "false"
+                                              });
+                                              Navigator.of(context).pop(true);
+                                            }
+                                          }
                                         }
                                       }
-                                    }),
-                        )
+                                    },
+                            ))
                       ],
                     ),
                   ),

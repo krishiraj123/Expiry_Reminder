@@ -1,5 +1,6 @@
 import 'package:expiry_reminder/components/custom_swipable_card.dart';
 import 'package:expiry_reminder/components/home_screen.dart';
+import 'package:expiry_reminder/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -64,10 +65,7 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
       child: Scaffold(
         backgroundColor: Colors.grey.shade300,
         appBar: AppBar(
-          title: Text(
-            "Expire Soon",
-            textScaler: TextScaler.linear(1),
-          ),
+          title: GlobalTextSettings.pageTitleText("Expire Soon"),
           backgroundColor: Color.fromRGBO(0, 151, 136, 1),
           titleTextStyle: GoogleFonts.lato(
             color: Colors.white,
@@ -82,7 +80,7 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
             },
             icon: Icon(
               Icons.arrow_back,
-              size: 27,
+              size: 25,
             ),
           ),
           iconTheme: IconThemeData(color: Colors.white, size: 27),
@@ -226,10 +224,11 @@ class _ExpireSoonPageState extends State<ExpireSoonPage> {
                   setState(() {});
                 },
                 onTap: () async {
+                  DateTime fDate = DateTime.parse(fromDate.text);
                   final _pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
+                    initialDate: fDate,
+                    firstDate: fDate,
                     lastDate: DateTime(2100),
                   );
                   if (_pickedDate != null) {

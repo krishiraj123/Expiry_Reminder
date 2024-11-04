@@ -3,6 +3,7 @@ import 'package:expiry_reminder/api/notifications.dart';
 import 'package:expiry_reminder/components/add_items_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +27,7 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
       height: 125,
       child: Card(
         // elevation: 3,
-        margin: const EdgeInsets.only(top: 15),
+        margin: const EdgeInsets.only(top: 10, left: 2, right: 2, bottom: 5),
         child: GestureDetector(
           onTap: () {
             Navigator.push(
@@ -247,7 +248,9 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                     CircularPercentIndicator(
                       radius: 50,
                       animation: true,
-                      progressColor: const Color.fromRGBO(0, 151, 136, 1),
+                      progressColor: widget.item!['dayLeftInExpiry'] <= 0
+                          ? Colors.red.shade400
+                          : Color.fromRGBO(0, 151, 136, 1),
                       lineWidth: 5,
                       percent: widget.item!['dayLeftInExpiryPercent'],
                       center: Column(
@@ -269,7 +272,9 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                                   fontSize: 13, color: Colors.grey.shade700)),
                         ],
                       ),
-                      backgroundColor: Colors.green.shade100,
+                      backgroundColor: widget.item!['dayLeftInExpiry'] <= 0
+                          ? Colors.red.shade100
+                          : Colors.green.shade100,
                       backgroundWidth: 3,
                     ),
                     Expanded(
@@ -286,28 +291,38 @@ class _CustomSwipeCardState extends State<CustomSwipeCard> {
                               textScaler: TextScaler.linear(1),
                               style: GoogleFonts.lato(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   color: Colors.grey.shade700),
                             ),
                             const SizedBox(
                               height: 4,
                             ),
                             Text(
-                              "Exp Date: ${widget.item!["expiryDate"]}",
+                              "Exp Date: ${DateFormat('dd-MM-yyyy').format(DateTime.parse(widget.item!["expiryDate"]))}",
                               overflow: TextOverflow.ellipsis,
                               textScaler: TextScaler.linear(1),
                               style: GoogleFonts.lato(
-                                  fontSize: 15, letterSpacing: 1.4),
+                                fontSize: 14,
+                                letterSpacing: 1.2,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
                             ),
                             const SizedBox(
                               height: 10,
                             ),
                             if (widget.item!["note"] != null)
-                              Text(
-                                widget.item!["note"],
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.lato(
-                                    fontSize: 14, letterSpacing: 1.2),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Text(
+                                  widget.item!["note"],
+                                  overflow: TextOverflow.ellipsis,
+                                  textScaler: TextScaler.linear(1),
+                                  style: GoogleFonts.lato(
+                                      fontSize: 14,
+                                      letterSpacing: 1.2,
+                                      color: Colors.black54),
+                                ),
                               ),
                           ],
                         ),

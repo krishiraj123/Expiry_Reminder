@@ -44,13 +44,11 @@ dependencies:
   rate_my_app:
   awesome_snackbar_content:
   animated_snack_bar:
-  #  firebase_core:
-  #  firebase_messaging:
   shared_preferences:
   flutter_local_notifications:
   timezone:
   permission_handler:
-
+  intl:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -64,7 +62,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/logos/main_app_logo.png"
+  image_path: "assets/logos/main_app_logo1.png"
   adaptive_icon_foreground: "assets/logos/foreground_icon_new.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to

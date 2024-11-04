@@ -7,6 +7,7 @@ import 'package:expiry_reminder/components/expire_soon_screen.dart';
 import 'package:expiry_reminder/components/expired_screen.dart';
 import 'package:expiry_reminder/components/need_to_buy_screen.dart';
 import 'package:expiry_reminder/components/rating_screen.dart';
+import 'package:expiry_reminder/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,8 +43,6 @@ class _HomePageState extends State<HomePage> {
     [Icons.share_arrival_time_rounded, "Expire Soon"],
     [Icons.warning_amber_outlined, "Expired"],
     [Icons.delete_sweep_sharp, "Deleted"],
-    // [FontAwesomeIcons.fileExport, "Export"],
-    // [FontAwesomeIcons.fileImport, "Import"],
     [Icons.feedback_outlined, "Feedback"],
     [Icons.code, "Developer"],
     [Icons.share, "Share app"],
@@ -69,6 +68,12 @@ class _HomePageState extends State<HomePage> {
     // });
   }
 
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Precache the image here, now the context is valid
+    precacheImage(AssetImage("assets/logos/main_app_logo.png"), context);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isSelectedList.every((element) {
@@ -85,6 +90,13 @@ class _HomePageState extends State<HomePage> {
             .addItemsList
             .where((element) => element["isDeleted"] == "false")
             .toList();
+
+    // filteredItems.sort((a, b) {
+    //   DateTime d1 = DateTime.parse(a["expiryDate"]);
+    //   DateTime d2 = DateTime.parse(b["expiryDate"]);
+    //   return d1.compareTo(d2);
+    // });
+
     if (searchQuery.text.isNotEmpty) {
       filteredItems = filteredItems
           .where((element) =>
@@ -105,15 +117,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: const Color.fromRGBO(0, 151, 136, 1),
-          title: Text(
-            "Expiry Reminder",
-            textScaler: TextScaler.linear(1),
-            style: GoogleFonts.poppins(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-          ),
+          title: GlobalTextSettings.pageTitleText("Expiry Reminder"),
           actions: [
             PopupMenuButton(
               elevation: 10,
@@ -125,7 +129,7 @@ class _HomePageState extends State<HomePage> {
               },
               icon: const Icon(
                 Icons.filter_list,
-                size: 35,
+                size: 28,
               ),
               itemBuilder: (BuildContext context) {
                 return popUpList.map((val) {
@@ -134,53 +138,51 @@ class _HomePageState extends State<HomePage> {
                       val,
                       textScaler: TextScaler.linear(1),
                       style: GoogleFonts.lato(
-                          fontSize: 18,
+                          fontSize: 15,
                           color: Colors.white,
                           fontWeight: FontWeight.w600),
                     ),
                     onTap: () {
+                      final addItemsProvider =
+                          Provider.of<AddItemsProvider>(context, listen: false);
+
                       if (val == "Sort By Name") {
-                        final List<Map<String, dynamic>> itemList = List.from(
-                            Provider.of<AddItemsProvider>(context,
-                                    listen: false)
-                                .addItemsList);
-                        setState(() {
-                          itemList.sort((a, b) => a["productName"]
+                        addItemsProvider.updateList().then((_) {
+                          List<Map<String, dynamic>> mutableList =
+                              List<Map<String, dynamic>>.from(
+                                  addItemsProvider.addItemsList);
+                          mutableList.sort((a, b) => a["productName"]
                               .toString()
-                              .compareTo(b["productName"]));
-                          Provider.of<AddItemsProvider>(context, listen: false)
-                              .addItemsList = itemList;
+                              .compareTo(b["productName"].toString()));
+                          addItemsProvider.addItemsList = mutableList;
                         });
                       }
+
                       if (val == "Sort By Expiry Date") {
-                        final List<Map<String, dynamic>> itemList = List.from(
-                            Provider.of<AddItemsProvider>(context,
-                                    listen: false)
-                                .addItemsList);
-                        setState(() {
-                          itemList.sort((a, b) =>
-                              DateTime.parse(a["expiryDate"])
-                                  .compareTo(DateTime.parse(b["expiryDate"])));
-                          Provider.of<AddItemsProvider>(context, listen: false)
-                              .addItemsList = itemList;
+                        addItemsProvider.updateList().then((_) {
+                          List<Map<String, dynamic>> mutableList =
+                              List<Map<String, dynamic>>.from(
+                                  addItemsProvider.addItemsList);
+                          mutableList.sort((a, b) {
+                            final dateA = DateTime.tryParse(a["expiryDate"]) ??
+                                DateTime.now();
+                            final dateB = DateTime.tryParse(b["expiryDate"]) ??
+                                DateTime.now();
+                            return dateA.compareTo(dateB);
+                          });
+                          addItemsProvider.addItemsList = mutableList;
                         });
                       }
+
                       if (val == "Sort By Default") {
-                        setState(() {
-                          Provider.of<AddItemsProvider>(context, listen: false)
-                              .updateList()
-                              .then((_) {
-                            final List<Map<String, dynamic>> itemList =
-                                List.from(Provider.of<AddItemsProvider>(context,
-                                        listen: false)
-                                    .addItemsList);
-                            itemList.sort((a, b) => a["productName"]
-                                .toString()
-                                .compareTo(b["productName"]));
-                            Provider.of<AddItemsProvider>(context,
-                                    listen: false)
-                                .addItemsList = itemList;
-                          });
+                        addItemsProvider.updateList().then((_) {
+                          List<Map<String, dynamic>> mutableList =
+                              List<Map<String, dynamic>>.from(
+                                  addItemsProvider.addItemsList);
+                          mutableList.sort((a, b) => a["productName"]
+                              .toString()
+                              .compareTo(b["productName"].toString()));
+                          addItemsProvider.addItemsList = mutableList;
                         });
                       }
                     },
@@ -231,11 +233,11 @@ class _HomePageState extends State<HomePage> {
                                   },
                                   cursorColor: Colors.red,
                                   style: GoogleFonts.lato(
-                                      fontSize: 20,
+                                      fontSize: 17,
                                       fontWeight: FontWeight.w600),
                                   decoration: const InputDecoration(
-                                    hintText: "Search by name and expiry date",
-                                    hintStyle: TextStyle(fontSize: 18),
+                                    hintText: "Search by name or expiry date",
+                                    hintStyle: TextStyle(fontSize: 16.5),
                                     focusedBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                           color: Colors.red, width: 2),
@@ -284,11 +286,11 @@ class _HomePageState extends State<HomePage> {
                                 icon: (filter == "atoz")
                                     ? const FaIcon(
                                         FontAwesomeIcons.arrowDownAZ,
-                                        size: 30,
+                                        size: 28,
                                       )
                                     : const FaIcon(
                                         FontAwesomeIcons.arrowUpAZ,
-                                        size: 30,
+                                        size: 28,
                                       ),
                               )
                             ],
@@ -315,7 +317,7 @@ class _HomePageState extends State<HomePage> {
   Widget customDrawer() {
     return SafeArea(
       child: Drawer(
-        width: 250,
+        width: 245,
         // backgroundColor: const Color.fromRGBO(0, 121, 106, 1),
         backgroundColor: Color.fromRGBO(0, 151, 136, 1),
         child: ListView.builder(
@@ -335,12 +337,13 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Image(
+                      Image(
                         image: AssetImage(
-                          "assets/logos/drawer_logo.png",
+                          "assets/logos/compressed_main_app_logo.png",
                         ),
                         width: 80,
                         height: 80,
+                        fit: BoxFit.cover,
                       ),
                       const SizedBox(
                         height: 10,
@@ -377,7 +380,7 @@ class _HomePageState extends State<HomePage> {
                   drawerItemsList[index][1].toString(),
                   textScaler: TextScaler.linear(1),
                   style: GoogleFonts.lato(
-                    fontSize: 18,
+                    fontSize: 17.5,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),

@@ -1,6 +1,7 @@
 import 'package:expiry_reminder/components/add_items_provider.dart';
 import 'package:expiry_reminder/components/custom_swipable_card.dart';
 import 'package:expiry_reminder/components/home_screen.dart';
+import 'package:expiry_reminder/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,16 +62,8 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
       child: Scaffold(
         backgroundColor: Colors.grey.shade300,
         appBar: AppBar(
-          title: Text(
-            "Need To Buy Items",
-            textScaler: TextScaler.linear(1),
-          ),
+          title: GlobalTextSettings.pageTitleText("Need To Buy Items"),
           backgroundColor: Color.fromRGBO(0, 151, 136, 1),
-          titleTextStyle: GoogleFonts.lato(
-            color: Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.w700,
-          ),
           iconTheme: IconThemeData(color: Colors.white, size: 27),
           leading: IconButton(
             onPressed: () {
@@ -80,7 +73,7 @@ class _NeedToBuyPageState extends State<NeedToBuyPage> {
             },
             icon: Icon(
               Icons.arrow_back,
-              size: 27,
+              size: 25,
             ),
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:expiry_reminder/components/home_screen.dart';
+import 'package:expiry_reminder/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -65,10 +66,7 @@ class _DeletedPageState extends State<DeletedPage> {
       child: Scaffold(
         backgroundColor: Colors.grey.shade300,
         appBar: AppBar(
-          title: Text(
-            "Deleted Items",
-            textScaler: TextScaler.linear(1),
-          ),
+          title: GlobalTextSettings.pageTitleText("Deleted Items"),
           backgroundColor: Color.fromRGBO(0, 151, 136, 1),
           titleTextStyle: GoogleFonts.lato(
             color: Colors.white,
@@ -83,7 +81,7 @@ class _DeletedPageState extends State<DeletedPage> {
             },
             icon: Icon(
               Icons.arrow_back,
-              size: 27,
+              size: 25,
             ),
           ),
           iconTheme: IconThemeData(color: Colors.white, size: 27),

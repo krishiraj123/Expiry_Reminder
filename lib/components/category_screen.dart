@@ -3,6 +3,7 @@ import 'package:expiry_reminder/components/add_new_category_screen.dart';
 import 'package:expiry_reminder/components/home_screen.dart';
 import 'package:expiry_reminder/components/info_detail_screen.dart';
 import 'package:expiry_reminder/database/reminder.dart';
+import 'package:expiry_reminder/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -42,11 +43,7 @@ class _CategoryPageState extends State<CategoryPage> {
           backgroundColor: Color.fromRGBO(0, 151, 136, 1),
           foregroundColor: Colors.white,
           iconTheme: IconThemeData(size: 25, color: Colors.white),
-          title: Text(
-            "Category",
-            textScaler: TextScaler.linear(1),
-            style: GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 23),
-          ),
+          title: GlobalTextSettings.pageTitleText("Category"),
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -55,7 +52,7 @@ class _CategoryPageState extends State<CategoryPage> {
             },
             icon: Icon(
               Icons.arrow_back,
-              size: 27,
+              size: 25,
             ),
           ),
           actions: [

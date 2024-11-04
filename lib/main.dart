@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:timezone/data/latest.dart' as tz;
 
 import 'api/notifications.dart';
 import 'components/splash_screen.dart';
@@ -17,7 +16,6 @@ Future<void> main() async {
   await MyDatabase().copyPasteAssetFileToRoot();
   await MyDatabase().updateDayLeftForAllProducts();
   await NotificationHelper.init();
-  tz.initializeTimeZones();
   runApp(const MyApp());
 }
 
