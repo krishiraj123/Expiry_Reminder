@@ -12,7 +12,6 @@
 
 - [About](#about)
 - [Features](#features)
-- [Demo](#demo)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
@@ -36,7 +35,6 @@ Expiry Reminder helps you manage perishable items—groceries, medicines, cosmet
 - 📱 **Cross-Platform**: Android, iOS, Web, Windows, macOS, Linux.
 - 📦 **Offline Support**: Local persistence via SQLite.
 
-## 🎥 Demo&#x20;
 
 ## 🛠 Getting Started&#x20;
 
