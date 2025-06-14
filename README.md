@@ -138,6 +138,6 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 
 ## 📬 Contact&#x20;
 
-Krishiraj Vansia – [email@example.com](mailto:krishirajvansia123@gmail.com)
+Krishiraj Vansia – [krishirajvansia123@gmail.com](mailto:krishirajvansia123@gmail.com)
 
 Project Link: [https://github.com/krishiraj123/Expiry_Reminder](https://github.com/krishiraj123/Expiry_Reminder)
