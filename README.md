@@ -34,8 +34,7 @@ Expiry Reminder helps you manage perishable items—groceries, medicines, cosmet
 - 🔖 **Add Items**: Specify name, category, purchase & expiry dates.
 - ⏰ **Reminders**: Local & push notifications customizable by user.
 - 📱 **Cross-Platform**: Android, iOS, Web, Windows, macOS, Linux.
-- ☁️ **Cloud Sync**: (Optional) Firebase backend for multi-device sync.
-- 📦 **Offline Support**: Local persistence via Hive or SQLite.
+- 📦 **Offline Support**: Local persistence via SQLite.
 
 ## 🎥 Demo&#x20;
 
