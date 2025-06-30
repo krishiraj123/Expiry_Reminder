@@ -137,4 +137,4 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 
 Krishiraj Vansia – [krishirajvansia123@gmail.com](mailto:krishirajvansia123@gmail.com)
 
-Project Link: [https://github.com/krishiraj123/Expiry_Reminder](https://github.com/krishiraj123/Expiry_Reminder)
+Project Link: [Playstore]([https://github.com/krishiraj123/Expiry_Reminder](https://play.google.com/store/apps/details?id=com.aswdc_ExpiryReminder))
