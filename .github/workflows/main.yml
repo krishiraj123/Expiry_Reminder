@@ -1,0 +1,36 @@
+name: Build APK for Screenshots
+
+on:
+  workflow_dispatch: # Allows you to manually click "Run"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Java 17 is REQUIRED for your newer Flutter version
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # Sets up the stable Flutter version (compatible with your sdk: >=3.2.5)
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # 1. Get packages
+      - name: Get Dependencies
+        run: flutter pub get
+
+      # 2. Build the APK (release mode is smaller and faster to build)
+      - name: Build APK
+        run: flutter build apk --release --no-tree-shake-icons
+
+      # 3. Upload the APK to GitHub so you can download it
+      - uses: actions/upload-artifact@v3
+        with:
+          name: expiry-reminder-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
